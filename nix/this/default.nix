@@ -29,6 +29,7 @@ rec {
     , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
     , targetCCWrapper ? targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
+    , targetCCIsClang ? targetCCWrapper.isClang
     , targetBintools ? targetCCWrapper.bintools.bintools
     , targetPrefix ? targetCCWrapper.targetPrefix
 
@@ -65,10 +66,11 @@ rec {
       }."${bvName}-${targetCC.name}" or (lib.warn "bvExclude not specified for ${bvName}" null))
     }:
     {
+      targetPkgs = targetPkgsByL4vArch."${arch}";
       inherit
         arch mcs features plat
         optLevel
-        targetCC targetBintools targetPrefix
+        targetCC targetCCIsClang targetBintools targetPrefix
         seL4Source
         l4vSource
         hol4Source
