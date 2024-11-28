@@ -41,6 +41,15 @@ let
 
 in rec {
 
+  cancelIPC =
+    let
+      f = scope: scope.withRevs {
+        seL4 = "697908fb9dfcdad591af27628c29f92d782c5639";
+        l4v = "fc4edf3f5f61b3dbb83eb930ed0818a7843e85f9";
+      };
+    in
+      f this.scopes.RISCV64_MCS;
+
   rmUnreachable =
     let
       f = scope: scope.withRevs {
