@@ -44,7 +44,7 @@ in rec {
   cancelIPC =
     let
       f = scope: scope.withRevs {
-        seL4 = "59e3ae7021a82dd319774cf818a2afbda39bf576";
+        seL4 = "4327597b3c70d4fcfb3fee85018b5bfcaec215fd";
         l4v = "2e3a35333db76159b35d9f2d5f0835093484a5a3";
       };
     in
@@ -53,7 +53,7 @@ in rec {
   cancelIPCWithSeL4Head =
     let
       f = scope: scope.withRevs {
-        seL4 = "bdc9e144ec3fb8c08f9392a6031fe44ef47a5d14";
+        seL4 = "8819ea3ede3646957543f2adc1424d4049e388e2";
         l4v = "2e3a35333db76159b35d9f2d5f0835093484a5a3";
       };
     in
