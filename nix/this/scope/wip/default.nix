@@ -41,11 +41,20 @@ let
 
 in rec {
 
+  cancelIPCWithSeL4Head =
+    let
+      f = scope: scope.withRevs {
+        seL4 = "bdc9e144ec3fb8c08f9392a6031fe44ef47a5d14";
+        l4v = "2e3a35333db76159b35d9f2d5f0835093484a5a3";
+      };
+    in
+      f this.scopes.RISCV64_MCS;
+
   cancelIPC =
     let
       f = scope: scope.withRevs {
-        seL4 = "697908fb9dfcdad591af27628c29f92d782c5639";
-        l4v = "fc4edf3f5f61b3dbb83eb930ed0818a7843e85f9";
+        seL4 = "59e3ae7021a82dd319774cf818a2afbda39bf576";
+        l4v = "2e3a35333db76159b35d9f2d5f0835093484a5a3";
       };
     in
       f this.scopes.RISCV64_MCS;
