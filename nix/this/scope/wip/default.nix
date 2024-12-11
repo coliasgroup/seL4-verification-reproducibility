@@ -109,7 +109,9 @@ in rec {
   ]));
 
   o2 = scopes.ARM.o2.withChannel.release.upstream;
+  o1 = scopes.ARM.o1.withChannel.release.upstream;
   o2w = o2.wip;
+  o1w = o1.wip;
   rm = scopes.RISCV64_MCS.o1.release.upstream;
   rmt = rm.graphRefine.all.targetDir;
 
@@ -149,7 +151,8 @@ in rec {
     ];
   };
 
-  es = o2w.es_;
+  es2 = o2w.es_;
+  es1 = o1w.es_;
   es_ = graphRefineWith {
     args = graphRefine.saveArgs ++ [
       "verbose"
