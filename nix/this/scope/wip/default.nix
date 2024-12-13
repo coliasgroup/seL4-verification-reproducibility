@@ -162,9 +162,10 @@ in rec {
       # "setupCallerCap"
       # "invokeTCB_WriteRegisters"
       # "makeUserPDE"
-      "lookupSourceSlot" # x
+      # "lookupSourceSlot" # x
       # "loadCapTransfer" # x
       # "Arch_maskCapRights" # x
+      "setupCallerCap"
       # "map_kernel_frame"
     ];
     solverList = debugSolverList;
