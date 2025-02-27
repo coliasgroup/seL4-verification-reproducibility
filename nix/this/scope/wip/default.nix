@@ -195,7 +195,8 @@ in rec {
   focused = scopes.ARM.o1.withChannel.release.upstream.wip.focused_;
   focused_ = mkHs {
     args = [
-      "loadCapTransfer"
+      "invokeTCB_WriteRegisters"
+      # "loadCapTransfer"
       # "create_untypeds"
       # "sendIPC"
       # "branchFlushRange"
