@@ -307,7 +307,7 @@ rec {
       withRevs = revs: overrideConfig (mkSourceAttrsFromRevs revs);
 
       # HACK
-      inherit fetchGitFromColiasGroup;
+      inherit fetchGitFromColiasGroup gitignoreSource cleanHol4Source;
     });
 
   mkScopesWith = getName: configs: lib.listToAttrs (lib.forEach configs (config: rec {

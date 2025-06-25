@@ -18,6 +18,9 @@
 
 , scopeConfig
 , overrideConfig
+, fetchGitFromColiasGroup
+, gitignoreSource
+, cleanHol4Source
 , l4vWith
 , graphRefine
 , graphRefineWith
@@ -34,9 +37,15 @@ let
   tmpSourceDir = ../../../../tmp/src;
 
   tmpSource = {
-    seL4 = tmpSourceDir + "/seL4";
-    HOL = tmpSourceDir + "/HOL";
-    graph-refine = tmpSourceDir + "/graph-refine";
+    seL4 = gitignoreSource (tmpSourceDir + "/seL4");
+    HOL = cleanHol4Source (tmpSourceDir + "/HOL");
+    # graph-refine = gitignoreSource (tmpSourceDir + "/graph-refine");
+
+    graph-refine = fetchGitFromColiasGroup {
+      repo = "graph-refine";
+      rev = "049678766cef8da48c26717a046f76fabca9735c"; # branch nspin/wip/bv-sandbox
+    };
+
   };
 
 in rec {
@@ -195,14 +204,21 @@ in rec {
   focused = scopes.ARM.o1.withChannel.release.upstream.wip.focused_;
   focused_ = mkHs {
     args = [
-      "invokeTCB_WriteRegisters"
-      # "loadCapTransfer"
-      # "create_untypeds"
+      "hack-skip-smt-proof-checks"
+
+      # "Arch_switchToIdleThread"
+      # "initTimer"
+      # "cteDelete"
       # "sendIPC"
-      # "branchFlushRange"
-      # "copyMRs"
-      # "strncmp"
       # "handleSyscall" # sat
+      "branchFlushRange"
+      # "create_frames_of_region"
+      # "create_untypeds"
+      # "setDomain"
+      # "branchFlushRange"
+      # "loadCapTransfer"
+      # "strncmp"
+      # "copyMRs"
     ];
     extra = {
       source = tmpSource.graph-refine;
