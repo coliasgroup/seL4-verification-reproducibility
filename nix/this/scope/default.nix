@@ -90,7 +90,7 @@ with self; {
 
   asmFunctionsTxt = "${decompilation}/kernel_mc_graph.txt";
 
-  bvSandboxRust = callPackage ./bv-sandbox-rust.nix {};
+  bv-ng = callPackage ./bv-ng.nix {};
 
   graphRefineSolverLists = callPackage ./graph-refine-solver-lists.nix {};
 

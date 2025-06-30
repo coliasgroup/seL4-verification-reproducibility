@@ -15,6 +15,8 @@
 , strace
 , gdb
 , cntr
+, yices
+, bitwuzla
 
 , scopeConfig
 , overrideConfig
@@ -26,6 +28,8 @@
 , graphRefineWith
 , graphRefineSolverLists
 , python2WithDebuggingSymbols
+
+, bv-ng
 
 , this
 , overrideScope
@@ -117,6 +121,51 @@ in rec {
     ))
   ]));
 
+  solvers = {
+    online = {
+      command = [ "yices-smt2" "--incremental" ];
+      memory_mode = "word8";
+      offline = {
+        yices = {
+          command = [ "yices-smt2" ];
+          memory_modes = [ "word8" "word32" ];
+          scopes = [ "all" "hyp" ];
+        };
+        bitwuzla = {
+          command = [ "bitwuzla" ];
+          memory_modes = [ "word8" "word32" ];
+          scopes = [ "all" "hyp" ];
+        };
+      };
+    };
+  };
+
+  check = runCommand "sel4-bv-cli.log" {
+    nativeBuildInputs = [
+      bv-ng.sel4-bv
+      yices
+      bitwuzla
+    ];
+  } ''
+    time sel4-bv-cli \
+      check \
+      --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
+      --target-dir ${big} \
+      --ignore-function fastpath_call \
+      --ignore-function fastpath_reply_recv \
+      --ignore-function-early c_handle_syscall \
+      --ignore-function arm_swi_syscall \
+      --rodata-section .rodata \
+      --rodata-symbol kernel_device_frames \
+      --rodata-symbol avail_p_regs \
+      --just-compare-checks \
+      -j $NIX_BUILD_CORES \
+        2>&1 | tee $out
+  '';
+      # --mismatch-dir $tmp/mismatch/local-check \
+      # --file-log $here/../../tmp/logs/test-check.log.txt \
+      # --file-log-level debug \
+
   bigProofsAll = [
     "all"
     # "loadCapTransfer"
@@ -163,9 +212,24 @@ in rec {
   small_ = mkHs {
     args = [
       "hack-skip-smt-proof-checks"
-      "loadCapTransfer"
-      "copyMRs"
+
+      # "loadCapTransfer"
+      # "copyMRs"
+      # "branchFlushRange"
+
+      "Arch_switchToIdleThread"
+      "initTimer"
+      "cteDelete"
+      "sendIPC"
+      # "handleSyscall" # sat
+      "branchFlushRange" # bad
+      "create_frames_of_region"
+      "create_untypeds"
+      "setDomain"
       "branchFlushRange"
+      "loadCapTransfer"
+      "strncmp"
+      "copyMRs"
     ];
     extra = {
       source = tmpSource.graph-refine;
