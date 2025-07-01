@@ -147,10 +147,12 @@ in rec {
       bitwuzla
     ];
   } ''
+    mkdir $out
+
     time sel4-bv-cli \
       check \
       --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
-      --target-dir ${big} \
+      --target-dir ${small} \
       --ignore-function fastpath_call \
       --ignore-function fastpath_reply_recv \
       --ignore-function-early c_handle_syscall \
@@ -160,7 +162,7 @@ in rec {
       --rodata-symbol avail_p_regs \
       --just-compare-checks \
       -j $NIX_BUILD_CORES \
-        2>&1 | tee $out
+        2>&1 | tee $out/log.txt
   '';
       # --mismatch-dir $tmp/mismatch/local-check \
       # --file-log $here/../../tmp/logs/test-check.log.txt \
@@ -221,8 +223,6 @@ in rec {
       "initTimer"
       "cteDelete"
       "sendIPC"
-      # "handleSyscall" # sat
-      "branchFlushRange" # bad
       "create_frames_of_region"
       "create_untypeds"
       "setDomain"
@@ -230,6 +230,8 @@ in rec {
       "loadCapTransfer"
       "strncmp"
       "copyMRs"
+
+      # "handleSyscall" # sat
     ];
     extra = {
       source = tmpSource.graph-refine;
