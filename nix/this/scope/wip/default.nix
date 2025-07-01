@@ -152,7 +152,7 @@ in rec {
     time sel4-bv-cli \
       check \
       --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
-      --target-dir ${small} \
+      --target-dir ${big} \
       --ignore-function fastpath_call \
       --ignore-function fastpath_reply_recv \
       --ignore-function-early c_handle_syscall \
