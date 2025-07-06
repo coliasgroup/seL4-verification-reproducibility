@@ -186,6 +186,24 @@ in rec {
     ];
   };
 
+  example = scopes.ARM.o1.withChannel.release.upstream.wip.example_;
+  example_ =
+    let
+      files = [
+        "kernel.elf.symtab"
+        "kernel.elf.rodata"
+        "CFunctions.txt"
+        "ASMFunctions.txt"
+        "StackBounds.txt"
+        "inline-scripts.json"
+        "proofs.json"
+      ];
+    in
+      runCommand "target-dir" {} ''
+        mkdir $out
+        cp ${bigProofs_}/{${lib.concatStringsSep "," files}} $out
+      '';
+
   mkHs = { args, extra }:
     with graphRefine; graphRefineWith ({
       name = "hs";
