@@ -140,33 +140,39 @@ in rec {
     };
   };
 
-  check = runCommand "sel4-bv-cli.log" {
-    nativeBuildInputs = [
-      bv-ng.sel4-bv
-      yices
-      bitwuzla
-    ];
-  } ''
-    mkdir $out
+  check =
+    let
+      targetDir = big;
+    in
+      runCommand "sel4-bv-cli.log" {
+        nativeBuildInputs = [
+          bv-ng.sel4-bv
+          yices
+          bitwuzla
+        ];
+      } ''
+        mkdir $out
 
-    time sel4-bv-cli \
-      check \
-      --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
-      --target-dir ${big} \
-      --ignore-function fastpath_call \
-      --ignore-function fastpath_reply_recv \
-      --ignore-function-early c_handle_syscall \
-      --ignore-function arm_swi_syscall \
-      --rodata-section .rodata \
-      --rodata-symbol kernel_device_frames \
-      --rodata-symbol avail_p_regs \
-      --just-compare-checks \
-      -j $NIX_BUILD_CORES \
-        2>&1 | tee $out/log.txt
-  '';
-      # --mismatch-dir $tmp/mismatch/local-check \
-      # --file-log $here/../../tmp/logs/test-check.log.txt \
-      # --file-log-level debug \
+        time sel4-bv-cli \
+          check \
+          --target-dir ${big} \
+          --force-eval-stages \
+          --reference-target-dir ${big} \
+          --rodata-section .rodata \
+          --rodata-symbol kernel_device_frames \
+          --rodata-symbol avail_p_regs \
+          --ignore-function fastpath_call \
+          --ignore-function fastpath_reply_recv \
+          --ignore-function arm_swi_syscall \
+          --ignore-function-early c_handle_syscall \
+          --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
+          --just-compare-checks \
+          -j $NIX_BUILD_CORES \
+            2>&1 | tee $out/log.txt
+      '';
+          # --mismatch-dir $tmp/mismatch/local-check \
+          # --file-log $here/../../tmp/logs/test-check.log.txt \
+          # --file-log-level debug \
 
   bigProofsAll = [
     "all"
