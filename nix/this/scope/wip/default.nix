@@ -40,15 +40,18 @@ let
 
   tmpSourceDir = ../../../../tmp/src;
 
-  tmpSource = {
+  tmpSource = rec {
     seL4 = gitignoreSource (tmpSourceDir + "/seL4");
     HOL = cleanHol4Source (tmpSourceDir + "/HOL");
-    # graph-refine = gitignoreSource (tmpSourceDir + "/graph-refine");
 
-    graph-refine = fetchGitFromColiasGroup {
+    graph-refine-local = gitignoreSource (tmpSourceDir + "/graph-refine");
+
+    graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
       rev = "049678766cef8da48c26717a046f76fabca9735c"; # branch nspin/wip/bv-sandbox
     };
+
+    graph-refine = graph-refine-remote;
 
   };
 
@@ -332,6 +335,30 @@ in rec {
       solverList = debugSolverList;
       keepBigLogs = true;
     };
+  };
+
+  earlySearch = scopes.ARM.o1.withChannel.release.upstream.wip.earlySearch_;
+  earlySearch_ = with graphRefine; graphRefineWith {
+    name = "early-search";
+    argLists = [
+      (excludeArgs ++ defaultArgs ++ [
+        "coverage"
+      ])
+    ];
+    source = tmpSource.graph-refine-local;
+    stackBounds = "${bigProofs_}/StackBounds.txt";
+  };
+
+  earlySearchFast = scopes.ARM.o1.withChannel.release.upstream.wip.earlySearchFast_;
+  earlySearchFast_ = with graphRefine; graphRefineWith {
+    name = "early-search-fast";
+    argLists = [
+      (excludeArgs ++ defaultArgs ++ [
+        "coverage"
+      ])
+    ];
+    source = tmpSource.graph-refine-remote;
+    stackBounds = "${bigProofs_}/StackBounds.txt";
   };
 
   aaa = scopes.ARM.o1.withChannel.release.upstream.wip.aaa_;
