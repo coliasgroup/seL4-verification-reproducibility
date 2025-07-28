@@ -39,3 +39,14 @@ show-coverage-diff: $(display)/status
 		<(grep -e '^Skipping' -e '^Aborting' docker-archaeology/release-12.0.0/target-sample/target/ARM-O1/coverage.txt | sort) \
 		<(grep -e '^Skipping' -e '^Aborting' $(display)/status/ARM-O1/coverage.txt | sort) \
 	|| true
+
+bv_project_dir := projects/bv-sandbox
+bv_example_target_dir := $(bv_project_dir)/examples/seL4/target-dir
+bv_test_target_dirs := $(bv_project_dir)/tmp/test-target-dirs
+update_bv_test_target_dir_cmd = nix-build -A wip.$(1) -o $(bv_test_target_dirs)/$(1)
+
+update-bv-target-dirs:
+	d=$$(nix-build -A wip.example) && rm -rf $(bv_example_target_dir) && cp -r --no-preserve=mode,ownership $$d $(bv_example_target_dir)
+	$(call update_bv_test_target_dir_cmd,focused)
+	$(call update_bv_test_target_dir_cmd,small)
+	$(call update_bv_test_target_dir_cmd,big)

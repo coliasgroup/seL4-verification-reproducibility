@@ -48,10 +48,11 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "049678766cef8da48c26717a046f76fabca9735c"; # branch nspin/wip/bv-sandbox
+      rev = "c1d769bd16ed3d4109a8876c233f168c9216e219"; # branch nspin/wip/bv-sandbox
     };
 
     graph-refine = graph-refine-remote;
+    # graph-refine = graph-refine-local;
 
   };
 
@@ -258,6 +259,8 @@ in rec {
       "strncmp"
       "copyMRs"
 
+      "setMRs_syscall_error"
+
       # "handleSyscall" # sat
     ];
     extra = {
@@ -304,7 +307,8 @@ in rec {
       # "cteDelete"
       # "sendIPC"
       # "handleSyscall" # sat
-      "branchFlushRange"
+      # "branchFlushRange"
+      "setMRs_syscall_error"
       # "create_frames_of_region"
       # "create_untypeds"
       # "setDomain"
