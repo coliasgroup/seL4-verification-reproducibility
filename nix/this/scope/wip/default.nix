@@ -48,12 +48,11 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "06f43652910d3ca32713ad1b3af0ed267173c761"; # branch nspin/wip/bv-sandbox
+      rev = "44894cccf29bd1dba10b375d2efd30650c45d69a"; # branch nspin/wip/bv-sandbox
     };
 
     graph-refine = graph-refine-remote;
     # graph-refine = graph-refine-local;
-
   };
 
 in rec {
@@ -147,6 +146,7 @@ in rec {
   check =
     let
       targetDir = big;
+      # targetDir = small;
     in
       runCommand "sel4-bv-cli.log" {
         nativeBuildInputs = [
@@ -157,24 +157,26 @@ in rec {
       } ''
         mkdir $out
 
-        time sel4-bv-cli \
-          check \
-          --target-dir ${big} \
-          --force-eval-stages \
-          --reference-target-dir ${big} \
-          --c-function-prefix Kernel_C. \
-          --rodata-section .rodata \
-          --rodata-symbol kernel_device_frames \
-          --rodata-symbol avail_p_regs \
-          --ignore-function fastpath_call \
-          --ignore-function fastpath_reply_recv \
-          --ignore-function arm_swi_syscall \
-          --ignore-function-early c_handle_syscall \
-          --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
-          --just-compare-checks \
-          -j $NIX_BUILD_CORES \
-            2>&1 | tee $out/log.txt
+        ( 
+          time sel4-bv-cli \
+            check \
+            --target-dir ${targetDir} \
+            --force-eval-stages \
+            --reference-target-dir ${targetDir} \
+            --c-function-prefix Kernel_C. \
+            --rodata-section .rodata \
+            --rodata-symbol kernel_device_frames \
+            --rodata-symbol avail_p_regs \
+            --ignore-function fastpath_call \
+            --ignore-function fastpath_reply_recv \
+            --ignore-function arm_swi_syscall \
+            --ignore-function-early c_handle_syscall \
+            --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
+            --just-compare-checks \
+            -j $NIX_BUILD_CORES
+          ) 2>&1 | tee $out/log.txt
       '';
+          # --include-function invokeTCB_WriteRegisters \
           # --mismatch-dir $tmp/mismatch/local-check \
           # --file-log $here/../../tmp/logs/test-check.log.txt \
           # --file-log-level debug \
@@ -328,7 +330,8 @@ in rec {
     args = [
       # "hack-offline-solvers-only"
       # "loadCapTransfer"
-      "decodeSetSpace"
+      # "decodeSetSpace"
+      "handleVMFault"
       # "sendIPC"
       # "branchFlushRange"
       # "copyMRs"
@@ -340,6 +343,31 @@ in rec {
       solverList = debugSolverList;
       keepBigLogs = true;
     };
+  };
+
+  inlineTrace = scopes.ARM.o1.withChannel.release.upstream.wip.inlineTrace_;
+  inlineTrace_ = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+      # "use-inline-scripts-of:${bigProofs_}/inline-scripts.json"
+      "use-proofs-of:${bigProofs_}/proofs.json"
+      "save-proof-checks:proof-checks.json"
+      "save-smt-proof-checks:smt-proof-checks.json"
+      "hack-skip-smt-proof-checks"
+      "hack-offline-solvers-only"
+      "handleVMFault"
+    ];
+    stackBounds = "${bigProofs_}/StackBounds.txt";
+    source = tmpSource.graph-refine;
+    solverList = debugSolverList;
+    keepBigLogs = true;
+  };
+
+  stackBoundsTrace = scopes.ARM.o1.withChannel.release.upstream.wip.stackBoundsTrace_;
+  stackBoundsTrace_ = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs;
+    source = tmpSource.graph-refine;
+    solverList = debugOnlineOnlySolverList;
+    keepBigLogs = true;
   };
 
   earlySearch = scopes.ARM.o1.withChannel.release.upstream.wip.earlySearch_;
@@ -561,6 +589,16 @@ in rec {
         # strategyFilter = attr: granularity: lib.optionals (attr == chosen) [
         #   "all"
         # ];
+      });
+    in
+      scope.solverList;
+
+  debugOnlineOnlySolverList =
+    let
+      chosen = "yices";
+      scope = graphRefineSolverLists.overrideScope (self: super: {
+        executables = lib.flip lib.mapAttrs super.executables (lib.const (old: [ wrapSolver "trace" ] ++ old));
+        offlineSolvers = {};
       });
     in
       scope.solverList;
