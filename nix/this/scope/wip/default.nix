@@ -48,7 +48,7 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "c1d769bd16ed3d4109a8876c233f168c9216e219"; # branch nspin/wip/bv-sandbox
+      rev = "06f43652910d3ca32713ad1b3af0ed267173c761"; # branch nspin/wip/bv-sandbox
     };
 
     graph-refine = graph-refine-remote;
@@ -162,6 +162,7 @@ in rec {
           --target-dir ${big} \
           --force-eval-stages \
           --reference-target-dir ${big} \
+          --c-function-prefix Kernel_C. \
           --rodata-section .rodata \
           --rodata-symbol kernel_device_frames \
           --rodata-symbol avail_p_regs \
