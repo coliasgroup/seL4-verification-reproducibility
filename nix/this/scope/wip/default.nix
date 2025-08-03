@@ -311,7 +311,11 @@ in rec {
       # "sendIPC"
       # "handleSyscall" # sat
       # "branchFlushRange"
-      "setMRs_syscall_error"
+      # "setMRs_syscall_error"
+      # "copyMRs"
+      # "decodeInvocation"
+      # "handleFaultReply"
+      "reserve_region"
       # "create_frames_of_region"
       # "create_untypeds"
       # "setDomain"
@@ -360,6 +364,15 @@ in rec {
     source = tmpSource.graph-refine;
     solverList = debugSolverList;
     keepBigLogs = true;
+  };
+
+  stackBoundsNoTrace = scopes.ARM.o1.withChannel.release.upstream.wip.stackBoundsNoTrace_;
+  stackBoundsNoTrace_ = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+      # "trace-to:report.txt"
+      # "verbose"
+    ];
+    source = tmpSource.graph-refine;
   };
 
   stackBoundsTrace = scopes.ARM.o1.withChannel.release.upstream.wip.stackBoundsTrace_;
