@@ -13,6 +13,6 @@
 [submodule "nixpkgs"]
 	path = nixpkgs
 	url = https://github.com/NixOS/nixpkgs.git
-[submodule "projects/bv-sandbox"]
+[submodule "projects/binary-verification"]
 	path = projects/binary-verification
 	url = https://github.com/coliasgroup/seL4-binary-verification.git
