@@ -181,16 +181,18 @@ in rec {
           # --file-log $here/../../tmp/logs/test-check.log.txt \
           # --file-log-level debug \
 
-  test = bv-ng.sel4-bv-test {
+  testWith = forSlow: bv-ng.sel4-bv-test {
     testFlags = [
       "--out-dir=$TMPDIR/test-out"
       "--graph-refine-dir=${scopeConfig.graphRefineSource}"
       "--for-fast=${big}"
-      "--for-slow=${big}"
-      # "--for-slow=${small}"
-      # "--for-slow=${focused}"
+      "--for-slow=${small}"
     ];
   };
+
+  testSmall = testWith small;
+
+  test = testWith big;
 
   bigProofsAll = [
     "all"
