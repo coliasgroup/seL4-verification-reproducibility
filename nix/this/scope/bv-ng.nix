@@ -1,7 +1,7 @@
 {}:
 
 let
-  topLevel = import ../../../projects/bv-sandbox/nix;
+  topLevel = import ../../../projects/binary-verification/nix;
 in {
   inherit (topLevel)
     sel4-bv

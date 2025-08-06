@@ -40,8 +40,8 @@ rec {
     , hol4Source ? cleanHol4Source localHol4Source
     , localGraphRefineSource ? ../../projects/graph-refine
     , graphRefineSource ? gitignoreSource localGraphRefineSource
-    , localBVSandboxSource ? ../../projects/bv-sandbox
-    , bvSandboxSource ? gitignoreSource localBVSandboxSource
+    , localBinaryVerificationSource ? ../../projects/binary-verification
+    , binaryVerificationSource ? gitignoreSource localBinaryVerificationSource
     , seL4IsabelleSource ? defaultSeL4IsabelleSource
     , useSeL4Isabelle ? true
 
@@ -64,7 +64,7 @@ rec {
         l4vSource
         hol4Source
         graphRefineSource
-        bvSandboxSource
+        binaryVerificationSource
         seL4IsabelleSource
         useSeL4Isabelle
         bvSetupSupport
@@ -215,7 +215,7 @@ rec {
     , l4v ? null
     , hol4 ? null
     , graphRefine ? null
-    , bvSandbox ? null
+    , binaryVerification ? null
     , seL4Isabelle ? null
     } @ revs:
     lib.listToAttrs
