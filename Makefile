@@ -40,7 +40,7 @@ show-coverage-diff: $(display)/status
 		<(grep -e '^Skipping' -e '^Aborting' $(display)/status/ARM-O1/coverage.txt | sort) \
 	|| true
 
-bv_project_dir := projects/bv-sandbox
+bv_project_dir := projects/binary-verification
 bv_example_target_dir := $(bv_project_dir)/examples/seL4/target-dir
 bv_test_target_dirs := $(bv_project_dir)/tmp/test-target-dirs
 update_bv_test_target_dir_cmd = nix-build -A wip.$(1) -o $(bv_test_target_dirs)/$(2)
