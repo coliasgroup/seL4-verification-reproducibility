@@ -48,7 +48,7 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "44894cccf29bd1dba10b375d2efd30650c45d69a"; # branch nspin/wip/bv-sandbox
+      rev = "4a2a0e3ba6a341b125e6abc08eb85b18804daae5"; # branch nspin/wip/bv-sandbox
     };
 
     graph-refine = graph-refine-remote;
@@ -180,6 +180,15 @@ in rec {
           # --mismatch-dir $tmp/mismatch/local-check \
           # --file-log $here/../../tmp/logs/test-check.log.txt \
           # --file-log-level debug \
+
+  test = bv-ng.sel4-bv-test [
+    "--out-dir=$TMPDIR/test-out"
+    "--graph-refine-dir=${scopeConfig.graphRefineSource}"
+    "--for-fast=${big}"
+    "--for-slow=${big}"
+    # "--for-slow=${small}"
+    # "--for-slow=${focused}"
+  ];
 
   bigProofsAll = [
     "all"
