@@ -182,6 +182,7 @@ in rec {
           # --file-log-level debug \
 
   test = bv-ng.sel4-bv-test [
+    "--jobs=1"
     "--out-dir=$TMPDIR/test-out"
     "--graph-refine-dir=${scopeConfig.graphRefineSource}"
     "--for-fast=${big}"
