@@ -15,4 +15,4 @@
 	url = https://github.com/NixOS/nixpkgs.git
 [submodule "projects/bv-sandbox"]
 	path = projects/bv-sandbox
-	url = https://github.com/coliasgroup/seL4-binary-verification-sandbox.git
+	url = https://github.com/coliasgroup/seL4-binary-verification.git
