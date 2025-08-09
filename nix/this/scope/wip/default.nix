@@ -173,7 +173,7 @@ in rec {
             --ignore-function-early c_handle_syscall \
             --solvers ${builtins.toFile "solvers.json" (builtins.toJSON solvers)} \
             --just-compare-checks \
-            -j $NIX_BUILD_CORES
+            --num-eval-cores 1 \
           ) 2>&1 | tee $out/log.txt
       '';
           # --include-function invokeTCB_WriteRegisters \
