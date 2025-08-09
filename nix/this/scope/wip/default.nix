@@ -221,10 +221,10 @@ in rec {
         "save-smt-proof-checks:smt-proof-checks.json"
 
         "handleInterruptEntry" # sat
-        "handleSyscall" # sat
+        # "handleSyscall" # sat
       ])
     ];
-    source = tmpSource.graph-refine;
+    # source = tmpSource.graph-refine;
   };
 
   example = scopes.ARM.o1.withChannel.release.upstream.wip.example_;
@@ -331,9 +331,13 @@ in rec {
   };
 
   focused = scopes.ARM.o1.withChannel.release.upstream.wip.focused_;
-  focused_ = mkHs' focusedProofs_ {
+  # focused_ = mkHs' focusedProofs_ {
+  focused_ = mkHs {
     args = [
       "hack-skip-smt-proof-checks"
+
+      "handleInterruptEntry" # sat
+      "handleSyscall" # sat
 
       # "Arch_switchToIdleThread"
       # "initTimer"
@@ -345,7 +349,7 @@ in rec {
       # "copyMRs"
       # "decodeInvocation"
       # "handleFaultReply"
-      "reserve_region"
+      # "reserve_region"
       # "create_frames_of_region"
       # "create_untypeds"
       # "setDomain"
