@@ -219,6 +219,8 @@ in rec {
       (excludeArgs ++ defaultArgs ++ [
         "save-proof-checks:proof-checks.json"
         "save-smt-proof-checks:smt-proof-checks.json"
+
+        "handleInterruptEntry" # sat
         "handleSyscall" # sat
       ])
     ];
