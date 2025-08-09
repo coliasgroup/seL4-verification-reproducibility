@@ -212,6 +212,19 @@ in rec {
     ];
   };
 
+  focusedProofs = scopes.ARM.o1.withChannel.release.upstream.wip.focusedProofs_;
+  focusedProofs_ = with graphRefine; graphRefineWith {
+    name = "all";
+    argLists = [
+      (excludeArgs ++ defaultArgs ++ [
+        "save-proof-checks:proof-checks.json"
+        "save-smt-proof-checks:smt-proof-checks.json"
+        "handleSyscall" # sat
+      ])
+    ];
+    source = tmpSource.graph-refine;
+  };
+
   example = scopes.ARM.o1.withChannel.release.upstream.wip.example_;
   example_ =
     let
@@ -230,19 +243,21 @@ in rec {
         cp ${bigProofs_}/{${lib.concatStringsSep "," files}} $out
       '';
 
-  mkHs = { args, extra }:
+  mkHs' = proofs: { args, extra }:
     with graphRefine; graphRefineWith ({
       name = "hs";
       argLists = [
         (excludeArgs ++ defaultArgs ++ [
-          "use-inline-scripts-of:${bigProofs_}/inline-scripts.json"
-          "use-proofs-of:${bigProofs_}/proofs.json"
+          "use-inline-scripts-of:${proofs}/inline-scripts.json"
+          "use-proofs-of:${proofs}/proofs.json"
           "save-proof-checks:proof-checks.json"
           "save-smt-proof-checks:smt-proof-checks.json"
         ] ++ args)
       ];
-      stackBounds = "${bigProofs_}/StackBounds.txt";
+      stackBounds = "${proofs}/StackBounds.txt";
     } // extra);
+
+  mkHs = mkHs' bigProofs_;
 
   big = scopes.ARM.o1.withChannel.release.upstream.wip.big_;
   big_ = mkHs {
@@ -314,7 +329,7 @@ in rec {
   };
 
   focused = scopes.ARM.o1.withChannel.release.upstream.wip.focused_;
-  focused_ = mkHs {
+  focused_ = mkHs' focusedProofs_ {
     args = [
       "hack-skip-smt-proof-checks"
 
