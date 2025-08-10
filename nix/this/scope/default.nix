@@ -105,9 +105,11 @@ with self; {
     saveArgs = [
       "save:functions.txt"
       "save-problems:problems.txt"
-      "save-inline-scripts:inline-scripts.json"
       "save-pairings:pairings.json"
-      "save-proofs:proofs.json"
+      "save-inline-scripts:inline-scripts.json"
+      "save-proof-checks:proof-checks.json"
+      "save-smt-proof-checks:smt-proof-checks.json"
+      "save-proof-scripts:proof-scripts.json"
     ];
 
     coverageArgs = [

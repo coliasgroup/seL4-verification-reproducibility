@@ -48,7 +48,7 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "4a2a0e3ba6a341b125e6abc08eb85b18804daae5"; # branch nspin/wip/bv-sandbox
+      rev = "e38ffeff280e8eaa692aa9118cd497b99256658c"; # branch nspin/wip/bv-sandbox
     };
 
     graph-refine = graph-refine-remote;
@@ -186,7 +186,9 @@ in rec {
       "--out-dir=$TMPDIR/test-out"
       "--graph-refine-dir=${scopeConfig.graphRefineSource}"
       "--for-fast=${big}"
-      "--for-slow=${small}"
+      "--for-slow=${forSlow}"
+      "-j1"
+      # "-j$NIX_BUILD_CORES"
     ];
   };
 
@@ -202,7 +204,8 @@ in rec {
   ];
 
   bigProofs = scopes.ARM.o1.withChannel.release.upstream.wip.bigProofs_;
-  bigProofs_ = with graphRefine; graphRefineWith {
+  bigProofs_ = graphRefine.all;
+  _bigProofs_ = with graphRefine; graphRefineWith {
     name = "all";
     argLists = [
       (excludeArgs ++ defaultArgs ++ [
@@ -237,7 +240,7 @@ in rec {
         "ASMFunctions.txt"
         "StackBounds.txt"
         "inline-scripts.json"
-        "proofs.json"
+        "proof-scripts.json"
       ];
     in
       runCommand "target-dir" {} ''
@@ -251,7 +254,7 @@ in rec {
       argLists = [
         (excludeArgs ++ defaultArgs ++ [
           "use-inline-scripts-of:${proofs}/inline-scripts.json"
-          "use-proofs-of:${proofs}/proofs.json"
+          "use-proofs-of:${proofs}/proof-scripts.json"
           "save-proof-checks:proof-checks.json"
           "save-smt-proof-checks:smt-proof-checks.json"
         ] ++ args)
@@ -387,7 +390,7 @@ in rec {
   inlineTrace_ = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
       # "use-inline-scripts-of:${bigProofs_}/inline-scripts.json"
-      "use-proofs-of:${bigProofs_}/proofs.json"
+      "use-proofs-of:${bigProofs_}/proof-scripts.json"
       "save-proof-checks:proof-checks.json"
       "save-smt-proof-checks:smt-proof-checks.json"
       "hack-skip-smt-proof-checks"
