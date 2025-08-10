@@ -56,9 +56,9 @@ lib.makeScope newScope (self: with self;
     };
 
     offlineCommands = {
-      cvc4 = executables.cvc4 ++ [ "--lang" "smt" ];
+      # cvc4 = executables.cvc4 ++ [ "--lang" "smt" ];
       cvc5 = executables.cvc5 ++ [ "--lang" "smt" ];
-      sonolar = executables.sonolar ++ [ "--input-format=smtlib2" ];
+      # sonolar = executables.sonolar ++ [ "--input-format=smtlib2" ];
       mathsat5 = executables.mathsat5 ++ [ "-input=smt2" ];
       z3 = executables.z3 ++ [ "-smt2" "-in" ];
       yices = executables.yices;
