@@ -109,7 +109,7 @@ with self; {
       "save-inline-scripts:inline-scripts.json"
       "save-proof-checks:proof-checks.json"
       "save-smt-proof-checks:smt-proof-checks.json"
-      "save-proof-scripts:proof-scripts.json"
+      "save-proof-scripts:proof-scripts.json" # TODO reorder
     ];
 
     coverageArgs = [
@@ -274,6 +274,8 @@ with self; {
   ### wip ###
 
   wip = callPackage ./wip {};
+
+  w = wip.default;
 
   # TODO For use with GDB. Not working.
   python2WithDebuggingSymbols = python2.overrideAttrs (attrs: {

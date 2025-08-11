@@ -119,10 +119,16 @@ in rec {
 
     (lib.forEach (map this.mkScopeFomNamedConfig this.namedConfigs) (scope:
       [
-        (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ] then scope.slow else scope.slower)
+        (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
+          then scope.slow
+          else scope.slower)
       ]
     ))
   ]));
+
+  default = o1;
+  o1 = scopes.ARM.o1.withChannel.release.upstream.wip;
+  o2 = scopes.ARM.o2.withChannel.release.upstream.wip;
 
   solvers = {
     online = {
@@ -198,40 +204,18 @@ in rec {
 
   bigProofsAll = [
     "all"
-    # "loadCapTransfer"
-    # "copyMRs"
-    # "branchFlushRange"
   ];
 
-  bigProofs = scopes.ARM.o1.withChannel.release.upstream.wip.bigProofs_;
-  bigProofs_ = graphRefine.all;
-  _bigProofs_ = with graphRefine; graphRefineWith {
-    name = "all";
-    argLists = [
-      (excludeArgs ++ defaultArgs ++ [
-        "save-proof-checks:proof-checks.json"
-        "save-smt-proof-checks:smt-proof-checks.json"
-      ] ++ bigProofsAll)
+  bigProofs = graphRefine.all;
+
+  focusedProofs = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+      "handleInterruptEntry" # sat
+      # "handleSyscall" # sat
     ];
   };
 
-  focusedProofs = scopes.ARM.o1.withChannel.release.upstream.wip.focusedProofs_;
-  focusedProofs_ = with graphRefine; graphRefineWith {
-    name = "all";
-    argLists = [
-      (excludeArgs ++ defaultArgs ++ [
-        "save-proof-checks:proof-checks.json"
-        "save-smt-proof-checks:smt-proof-checks.json"
-
-        "handleInterruptEntry" # sat
-        # "handleSyscall" # sat
-      ])
-    ];
-    # source = tmpSource.graph-refine;
-  };
-
-  example = scopes.ARM.o1.withChannel.release.upstream.wip.example_;
-  example_ =
+  example =
     let
       files = [
         "kernel.elf.symtab"
@@ -245,25 +229,21 @@ in rec {
     in
       runCommand "target-dir" {} ''
         mkdir $out
-        cp ${bigProofs_}/{${lib.concatStringsSep "," files}} $out
+        cp ${bigProofs}/{${lib.concatStringsSep "," files}} $out
       '';
 
-  mkHs' = proofs: { args, extra }:
+  useProofsFrom = proofs: { args, extra }:
     with graphRefine; graphRefineWith ({
-      name = "hs";
-      argLists = [
-        (excludeArgs ++ defaultArgs ++ [
-          "use-inline-scripts-of:${proofs}/inline-scripts.json"
-          "use-proofs-of:${proofs}/proof-scripts.json"
-        ] ++ args)
-      ];
+      args = excludeArgs ++ defaultArgs ++ [
+        "use-inline-scripts-of:${proofs}/inline-scripts.json"
+        "use-proofs-of:${proofs}/proof-scripts.json" # TODO rename this arg to use-proof-scripts-of
+      ] ++ args;
       stackBounds = "${proofs}/StackBounds.txt";
     } // extra);
 
-  mkHs = mkHs' bigProofs_;
+  useProofs = useProofsFrom bigProofs;
 
-  big = scopes.ARM.o1.withChannel.release.upstream.wip.big_;
-  big_ = mkHs {
+  big = useProofs {
     args = [
       "hack-skip-smt-proof-checks"
     ] ++ bigProofsAll;
@@ -272,14 +252,9 @@ in rec {
     };
   };
 
-  small = scopes.ARM.o1.withChannel.release.upstream.wip.small_;
-  small_ = mkHs {
+  small = useProofs {
     args = [
       "hack-skip-smt-proof-checks"
-
-      # "loadCapTransfer"
-      # "copyMRs"
-      # "branchFlushRange"
 
       "Arch_switchToIdleThread"
       "initTimer"
@@ -292,18 +267,14 @@ in rec {
       "loadCapTransfer"
       "strncmp"
       "copyMRs"
-
       "setMRs_syscall_error"
-
-      # "handleSyscall" # sat
     ];
     extra = {
       source = tmpSource.graph-refine;
     };
   };
 
-  smallTrace = scopes.ARM.o1.withChannel.release.upstream.wip.smallTrace_;
-  smallTrace_ = mkHs {
+  smallTrace = useProofs {
     args = [
       "loadCapTransfer"
       "copyMRs"
@@ -316,10 +287,10 @@ in rec {
     };
   };
 
-  smallTraceOfflineOnly = scopes.ARM.o1.withChannel.release.upstream.wip.smallTraceOfflineOnly_;
-  smallTraceOfflineOnly_ = mkHs {
+  smallTraceOfflineOnly = useProofs {
     args = [
       "hack-offline-solvers-only"
+
       "loadCapTransfer"
       "copyMRs"
       "branchFlushRange"
@@ -331,51 +302,21 @@ in rec {
     };
   };
 
-  focused = scopes.ARM.o1.withChannel.release.upstream.wip.focused_;
-  # focused_ = mkHs' focusedProofs_ {
-  focused_ = mkHs {
+  focused = useProofs {
     args = [
       "hack-skip-smt-proof-checks"
 
       "handleInterruptEntry" # sat
       "handleSyscall" # sat
-
-      # "Arch_switchToIdleThread"
-      # "initTimer"
-      # "cteDelete"
-      # "sendIPC"
-      # "handleSyscall" # sat
-      # "branchFlushRange"
-      # "setMRs_syscall_error"
-      # "copyMRs"
-      # "decodeInvocation"
-      # "handleFaultReply"
-      # "reserve_region"
-      # "create_frames_of_region"
-      # "create_untypeds"
-      # "setDomain"
-      # "branchFlushRange"
-      # "loadCapTransfer"
-      # "strncmp"
-      # "copyMRs"
     ];
     extra = {
       source = tmpSource.graph-refine;
     };
   };
 
-  focusedTrace = scopes.ARM.o1.withChannel.release.upstream.wip.focusedTrace_;
-  focusedTrace_ = mkHs {
+  focusedTrace = useProofs {
     args = [
-      # "hack-offline-solvers-only"
-      # "loadCapTransfer"
-      # "decodeSetSpace"
       "handleVMFault"
-      # "sendIPC"
-      # "branchFlushRange"
-      # "copyMRs"
-      # "strncmp"
-      # "handleSyscall" # sat
     ];
     extra = {
       source = tmpSource.graph-refine;
@@ -384,25 +325,23 @@ in rec {
     };
   };
 
-  inlineTrace = scopes.ARM.o1.withChannel.release.upstream.wip.inlineTrace_;
-  inlineTrace_ = with graphRefine; graphRefineWith {
+  inlineTrace = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
       # "use-inline-scripts-of:${bigProofs_}/inline-scripts.json"
-      "use-proofs-of:${bigProofs_}/proof-scripts.json"
+      "use-proofs-of:${bigProofs}/proof-scripts.json"
       "save-proof-checks:proof-checks.json"
       "save-smt-proof-checks:smt-proof-checks.json"
       "hack-skip-smt-proof-checks"
       "hack-offline-solvers-only"
       "handleVMFault"
     ];
-    stackBounds = "${bigProofs_}/StackBounds.txt";
+    stackBounds = "${bigProofs}/StackBounds.txt";
     source = tmpSource.graph-refine;
     solverList = debugSolverList;
     keepBigLogs = true;
   };
 
-  stackBoundsNoTrace = scopes.ARM.o1.withChannel.release.upstream.wip.stackBoundsNoTrace_;
-  stackBoundsNoTrace_ = with graphRefine; graphRefineWith {
+  stackBoundsNoTrace = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
       # "trace-to:report.txt"
       # "verbose"
@@ -410,36 +349,29 @@ in rec {
     source = tmpSource.graph-refine;
   };
 
-  stackBoundsTrace = scopes.ARM.o1.withChannel.release.upstream.wip.stackBoundsTrace_;
-  stackBoundsTrace_ = with graphRefine; graphRefineWith {
+  stackBoundsTrace = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs;
     source = tmpSource.graph-refine;
     solverList = debugOnlineOnlySolverList;
     keepBigLogs = true;
   };
 
-  earlySearch = scopes.ARM.o1.withChannel.release.upstream.wip.earlySearch_;
-  earlySearch_ = with graphRefine; graphRefineWith {
+  earlySearch = with graphRefine; graphRefineWith {
     name = "early-search";
-    argLists = [
-      (excludeArgs ++ defaultArgs ++ [
-        "coverage"
-      ])
+    args = excludeArgs ++ defaultArgs ++ [
+      "coverage"
     ];
-    source = tmpSource.graph-refine-local;
-    stackBounds = "${bigProofs_}/StackBounds.txt";
+    source = tmpSource.graph-refine;
+    stackBounds = "${bigProofs}/StackBounds.txt";
   };
 
-  earlySearchFast = scopes.ARM.o1.withChannel.release.upstream.wip.earlySearchFast_;
-  earlySearchFast_ = with graphRefine; graphRefineWith {
+  earlySearchFast = with graphRefine; graphRefineWith {
     name = "early-search-fast";
-    argLists = [
-      (excludeArgs ++ defaultArgs ++ [
-        "coverage"
-      ])
+    args = excludeArgs ++ defaultArgs ++ [
+      "coverage"
     ];
-    source = tmpSource.graph-refine-remote;
-    stackBounds = "${bigProofs_}/StackBounds.txt";
+    source = tmpSource.graph-refine;
+    stackBounds = "${bigProofs}/StackBounds.txt";
   };
 
   aaa = scopes.ARM.o1.withChannel.release.upstream.wip.aaa_;
@@ -491,8 +423,6 @@ in rec {
     keepBigLogs = true;
   };
 
-  o2 = scopes.ARM.o2.withChannel.release.upstream;
-  o1 = scopes.ARM.o1.withChannel.release.upstream;
   o2w = o2.wip;
   o1w = o1.wip;
   rm = scopes.RISCV64_MCS.o1.release.upstream;
@@ -617,7 +547,7 @@ in rec {
     let
       chosen = "yices";
     in
-      graphRefineSolverLists.overrideScope (self: super: {
+      graphRefineSolverLists.default.withOverriddenScope (self: super: {
         executables = lib.flip lib.mapAttrs super.executables (lib.const (old: [ wrapSolver "trace" ] ++ old));
         # executables = lib.flip lib.mapAttrs super.executables (k: v:
         #   (if k == chosen then [ wrap "trace" ] else []) ++ v
