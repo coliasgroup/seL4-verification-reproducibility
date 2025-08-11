@@ -183,7 +183,14 @@ lib.makeScope newScope (self: with self;
         )));
       };
 
-    solverList = formatSolverList formatSolverListArgs;
+    solverList = (formatSolverList formatSolverListArgs).overrideAttrs (
+      finalAttrs: previousAttrs: {
+        passthru = (previousAttrs.passthru or {}) // {
+          scope = self;
+          withOverriddenScope = f: (self.overrideScope f).solverList;
+        };
+      }
+    );
 
     default = solverList;
   }

@@ -616,8 +616,8 @@ in rec {
   debugSolverList =
     let
       chosen = "yices";
-      # chosen = "bitwuzla";
-      scope = graphRefineSolverLists.overrideScope (self: super: {
+    in
+      graphRefineSolverLists.overrideScope (self: super: {
         executables = lib.flip lib.mapAttrs super.executables (lib.const (old: [ wrapSolver "trace" ] ++ old));
         # executables = lib.flip lib.mapAttrs super.executables (k: v:
         #   (if k == chosen then [ wrap "trace" ] else []) ++ v
@@ -638,18 +638,10 @@ in rec {
         #   "all"
         # ];
       });
-    in
-      scope.solverList;
 
-  debugOnlineOnlySolverList =
-    let
-      chosen = "yices";
-      scope = graphRefineSolverLists.overrideScope (self: super: {
-        executables = lib.flip lib.mapAttrs super.executables (lib.const (old: [ wrapSolver "trace" ] ++ old));
-        offlineSolvers = {};
-      });
-    in
-      scope.solverList;
+  debugOnlineOnlySolverList = debugSolverList.withOverriddenScope (self: super: {
+    offlineSolverFilter = attr: [];
+  });
 
   wrapSolver = writeScript "wrap" ''
     #!${runtimeShell}
