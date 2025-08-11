@@ -255,8 +255,6 @@ in rec {
         (excludeArgs ++ defaultArgs ++ [
           "use-inline-scripts-of:${proofs}/inline-scripts.json"
           "use-proofs-of:${proofs}/proof-scripts.json"
-          "save-proof-checks:proof-checks.json"
-          "save-smt-proof-checks:smt-proof-checks.json"
         ] ++ args)
       ];
       stackBounds = "${proofs}/StackBounds.txt";
