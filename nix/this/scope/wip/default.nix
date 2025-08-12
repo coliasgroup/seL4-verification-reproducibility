@@ -109,17 +109,20 @@ in rec {
   keep = [
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
     scopes.ARM.o1.withChannel.tip.upstream.legacy.wip.keepHere
-    scopes.ARM.o1.withChannel.release.upstream.all
-    this.displayStatus
+    # scopes.ARM.o1.withChannel.release.upstream.all
+    # this.displayStatus
   ];
 
   keepHere = writeText "keep" (toString (lib.flatten [
-    (lib.forEach (map this.mkScopeFomNamedConfig this.namedConfigs) (scope:
-      [
-        (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
-          then scope.slow
-          else scope.slower)
-      ]
+    (lib.forEach (lib.attrValues scopes) (scope':
+      let
+        scope = scope'.o1;
+      in
+        lib.optionals (scope'.scopeConfig.plat == "") [
+          (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
+            then scope.slow
+            else scope.slower)
+        ]
     ))
   ]));
 
