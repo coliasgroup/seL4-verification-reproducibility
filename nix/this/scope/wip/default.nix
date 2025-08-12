@@ -108,7 +108,7 @@ in rec {
 
   keep = [
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
-    scopes.ARM.o1.withChannel.tip.upstream.legacy.wip.keepHere
+    scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
     # scopes.ARM.o1.withChannel.release.upstream.all
     # this.displayStatus
   ];
