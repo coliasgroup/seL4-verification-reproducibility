@@ -125,7 +125,7 @@ with self; {
 
     justSave = graphRefineWith {
       name = "just-save";
-      args = defaultArgs;
+      args = saveArgs;
     };
 
     coverage = graphRefineWith {

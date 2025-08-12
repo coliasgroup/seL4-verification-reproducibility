@@ -81,13 +81,6 @@ in rec {
       l4v = "da9ac959588d5a2bd0a3827d669a4c9dad3c9fff";
     }));
 
-  getActiveIRQ = graphRefineWith {
-    name = "x";
-    args = graphRefine.defaultArgs ++ [
-      "deps:Kernel_C.getActiveIRQ"
-    ];
-  };
-
   irqInvalid = writeText "x" (toString (lib.flatten [
     irqInvalidScopes.ARM.cProofs
     irqInvalidScopes.ARM_HYP.cProofs
@@ -129,6 +122,10 @@ in rec {
   default = o1;
   o1 = scopes.ARM.o1.withChannel.release.upstream.wip;
   o2 = scopes.ARM.o2.withChannel.release.upstream.wip;
+  d = {
+    o1 = scopes.ARM.o1.withChannel.release.downstream.wip;
+    o2 = scopes.ARM.o2.withChannel.release.downstream.wip;
+  };
 
   solvers = {
     online = {
@@ -208,10 +205,11 @@ in rec {
 
   bigProofs = graphRefine.all;
 
+  # -O2
   focusedProofs = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
       "handleInterruptEntry" # sat
-      # "handleSyscall" # sat
+      "handleSyscall" # sat
     ];
   };
 
@@ -374,174 +372,19 @@ in rec {
     stackBounds = "${bigProofs}/StackBounds.txt";
   };
 
-  aaa = scopes.ARM.o1.withChannel.release.upstream.wip.aaa_;
-  aaa_ = with graphRefine; graphRefineWith {
-    name = "all";
-    argLists = [
-      (excludeArgs ++ defaultArgs ++ [
-        "use-inline-scripts-of:${bigProofs_}/inline-scripts.txt"
-        "use-proofs-of:${bigProofs_}/proofs.txt"
+  # # #
 
-        "save-proof-checks:proof-checks.txt"
-        "save-smt-proof-checks:smt-proof-checks.txt"
-        "hack-skip-smt-proof-checks"
-        # "hack-offline-solvers-only"
+  xx = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+      # "deps:handleInterruptEntry" # sat
+      # "deps:handleSyscall" # sat
+      "handleInterruptEntry" # sat
+      "handleSyscall" # sat
 
-        # "loadCapTransfer"
-        # "copyMRs"
-        # "branchFlushRange"
-
-        "all"
-      ])
-    ];
-    stackBounds = "${bigProofs_}/StackBounds.txt";
-    source = tmpSource.graph-refine;
-    # solverList = debugSolverList;
-    # keepBigLogs = true;
-  };
-
-  bbb = scopes.ARM.o1.withChannel.release.upstream.wip.bbb_;
-  bbb_ = with graphRefine; graphRefineWith {
-    name = "all";
-    argLists = [
-      (excludeArgs ++ defaultArgs ++ [
-        "use-inline-scripts-of:${bigProofs_}/inline-scripts.txt"
-        "use-proofs-of:${bigProofs_}/proofs.txt"
-
-        "save-smt-proof-checks:smt-proof-checks.json"
-        "hack-skip-smt-proof-checks"
-        # "hack-offline-solvers-only"
-
-        "memzero"
-
-        # "all"
-      ])
-    ];
-    stackBounds = "${bigProofs_}/StackBounds.txt";
-    source = tmpSource.graph-refine;
-    solverList = debugSolverList;
-    keepBigLogs = true;
-  };
-
-  o2w = o2.wip;
-  o1w = o1.wip;
-  rm = scopes.RISCV64_MCS.o1.release.upstream;
-  rmt = rm.graphRefine.all.targetDir;
-
-  stackBounds = graphRefineWith {
-    name = "stack-bounds";
-    args = graphRefine.saveArgs;
-  };
-
-  g = o2.wip.g_;
-  g_ = graphRefineWith {
-    args = graphRefine.saveArgs ++ [
-      "trace-to:report.txt"
-      # "coverage"
-      "loadCapTransfer"
-      "copyMRs"
-      "branchFlushRange"
-    ];
-    stackBounds = "${stackBounds}/StackBounds.txt";
-    # solverList = debugSolverList;
-    # keepBigLogs = true;
-    # source = tmpSource.graph-refine;
-  };
-
-  h = o2.wip.h_;
-  h_ = graphRefineWith {
-    args = graphRefine.saveArgs ++ [
-      # "trace-to:report.txt"
-      "verbose"
-      # "coverage"
-      "save-proof-checks:proof-checks.txt"
-      "use-proofs-of:${g_}/proofs.txt"
-      "use-inline-scripts-of:${g_}/inline-scripts.txt"
-
-      "loadCapTransfer"
-      "Arch_switchToIdleThread"
-      "sameRegionAs"
-      # "copyMRs"
-      # "branchFlushRange"
-    ];
-    stackBounds = "${stackBounds}/StackBounds.txt";
-    # solverList = debugSolverList;
-    # keepBigLogs = true;
-    source = tmpSource.graph-refine;
-  };
-
-  bvWip = o2.wip.bvWip_;
-
-  bvWip_ = graphRefineWith {
-    args = graphRefine.saveArgs ++ [
-      "trace-to:report.txt"
-      # "coverage"
-      "loadCapTransfer"
-    ];
-    stackBounds = "${stackBounds}/StackBounds.txt";
-    solverList = debugSolverList;
-    keepBigLogs = true;
-    source = tmpSource.graph-refine;
-  };
-
-  o1bad = graphRefineWith {
-    args = graphRefine.saveArgs ++ [
-      # "verbose"
-      "trace-to:report.txt"
-      "init_freemem"
-    ];
-    stackBounds = "${stackBounds}/StackBounds.txt";
-  };
-
-  o2c = o2.graphRefineWith {
-    args = o2.graphRefine.saveArgs ++ [
-      "trace-to:report.txt"
-      "-exclude"
-        "init_freemem"
-        "decodeARMMMUInvocation"
-      "-end-exclude"
-      "coverage"
     ];
   };
 
-  o2a = o2.graphRefineWith {
-    args = o2.graphRefine.saveArgs ++ [
-      "trace-to:report.txt"
-      "-exclude"
-        "init_freemem"
-        "decodeARMMMUInvocation"
-      "-end-exclude"
-      "all"
-    ];
-  };
-
-  es2 = o2w.es_;
-  es1 = o1w.es_;
-  es_ = graphRefineWith {
-    args = graphRefine.saveArgs ++ [
-      "verbose"
-      # "trace-to:report.txt"
-
-      # "emptySlot"
-      # "setupCallerCap"
-      # "invokeTCB_WriteRegisters"
-      # "makeUserPDE"
-      # "lookupSourceSlot" # x
-      # "loadCapTransfer" # x
-      # "Arch_maskCapRights" # x
-      "setupCallerCap"
-      # "map_kernel_frame"
-    ];
-    solverList = debugSolverList;
-    keepBigLogs = true;
-    stackBounds = "${stackBounds}/StackBounds.txt";
-    source = tmpSource.graph-refine;
-  };
-
-    # extraNativeBuildInputs = [
-    #   breakpointHook
-    #   bashInteractive
-    # ];
+  # # #
 
   debugSolverList =
     let
@@ -624,3 +467,10 @@ in rec {
     });
   };
 }
+
+# NOTES
+# - for debugging
+#     extraNativeBuildInputs = [
+#       breakpointHook
+#       bashInteractive
+#     ];

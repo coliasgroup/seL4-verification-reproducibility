@@ -238,7 +238,8 @@ rec {
       downstream = {
         legacy = mkSourceAttrsFromRevs {
           seL4 = "954b98b253abdbe14bcf6ffb41dcc24e52e51e9f"; # coliasgroup:verification-reproducability
-          l4v = throw "todo";
+          l4v = "0b3a9f606000a49ef3dd05fc16ee5a44375f1b1d";
+          # l4v = throw "todo";
         };
       };
     };
