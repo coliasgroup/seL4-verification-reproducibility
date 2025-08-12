@@ -106,14 +106,14 @@ in rec {
     scopes.X64.withChannel.release.upstream.cProofs
   ]));
 
-  keep = [
+  keep = writeText "keep" (toString (lib.flatten [
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
     scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
     # scopes.ARM.o1.withChannel.release.upstream.all
     # this.displayStatus
-  ];
+  ]));
 
-  keepHere = writeText "keep" (toString (lib.flatten [
+  keepHere = writeText "keep-here" (toString (lib.flatten [
     (lib.forEach (lib.attrValues scopes) (scope':
       let
         scope = scope'.o1;
