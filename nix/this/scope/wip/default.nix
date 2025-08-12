@@ -107,14 +107,13 @@ in rec {
   ]));
 
   keep = [
-    scopes.ARM.o1.withChannel.release.upstream.keepHere
-    scopes.ARM.o1.withChannel.tip.upstream.keepHere
+    scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
+    scopes.ARM.o1.withChannel.tip.upstream.legacy.wip.keepHere
+    scopes.ARM.o1.withChannel.release.upstream.all
+    this.displayStatus
   ];
 
   keepHere = writeText "keep" (toString (lib.flatten [
-    # this.scopes.arm.legacy.o1.all
-    # this.displayStatus
-
     (lib.forEach (map this.mkScopeFomNamedConfig this.namedConfigs) (scope:
       [
         (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]

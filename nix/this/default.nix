@@ -386,8 +386,8 @@ rec {
       justTargetDir = scope: scope.graphRefine.all.targetDir;
     in
       linkFarm "display-status" [
-        (mk all scopes.ARM.o1.withChannel.release.upstream)
-        (mk all scopes.ARM.o2.withChannel.release.upstream)
+        (mk all scopes.ARM.o1.withChannel.release.downstream)
+        (mk all scopes.ARM.o2.withChannel.release.downstream)
         (mk justTargetDir scopes.RISCV64.o1.withChannel.release.upstream)
         (mk justTargetDir scopes.RISCV64.o2.withChannel.release.upstream)
       ];
