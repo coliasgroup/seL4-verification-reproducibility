@@ -106,7 +106,11 @@ in rec {
     scopes.X64.withChannel.release.upstream.cProofs
   ]));
 
-  keep = writeText "keep" (toString (lib.flatten [
+  keep = [
+    scopes.ARM.o1.withChannel.release.upstream.keepHere
+  ];
+
+  keepHere = writeText "keep" (toString (lib.flatten [
     # this.scopes.arm.legacy.o1.all
     # this.displayStatus
 
