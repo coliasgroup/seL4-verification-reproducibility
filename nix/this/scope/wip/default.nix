@@ -48,7 +48,7 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "e38ffeff280e8eaa692aa9118cd497b99256658c"; # branch nspin/wip/bv-sandbox
+      rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch nspin/wip/bv-sandbox
     };
 
     graph-refine = graph-refine-remote;
@@ -106,20 +106,43 @@ in rec {
     scopes.X64.withChannel.release.upstream.cProofs
   ]));
 
-  keep = writeText "keep" (toString (lib.flatten [
-    # this.scopes.arm.legacy.o1.all
-    # this.displayStatus
+  cached = writeText "cached" (toString (lib.flatten [
+    scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
+    scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
+    scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
+    o1.big
+    o1.small
+    o1.focused
+    o1.example
+    o2.big
+    o2.small
+    o2.focused
+    o2.example
+    scopes.ARM.o1.withChannel.release.downstream.l4vAll
+  ]));
 
-    (lib.forEach (map this.mkScopeFomNamedConfig this.namedConfigs) (scope:
-      [
-        (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
-          then scope.slow
-          else scope.slower)
-      ]
+  todo = writeText "todo" (toString (lib.flatten [
+    scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
+    scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
+    # scopes.ARM.o1.withChannel.release.upstream.all
+    # this.displayStatus
+  ]));
+
+  keepHere = writeText "keep-here" (toString (lib.flatten [
+    (lib.forEach (lib.attrValues scopes) (scope':
+      let
+        scope = scope'.o1;
+      in
+        lib.optionals (scope'.scopeConfig.plat == "") [
+          (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
+            then scope.slow
+            else scope.slower)
+        ]
     ))
   ]));
 
   default = o1;
+  # default = o2;
   o1 = scopes.ARM.o1.withChannel.release.upstream.wip;
   o2 = scopes.ARM.o2.withChannel.release.upstream.wip;
   d = {
@@ -244,6 +267,22 @@ in rec {
   big = useProofs {
     args = [
       "hack-skip-smt-proof-checks"
+    ] ++ lib.optionals (scopeConfig.optLevel == "-O2") [
+      "-exclude"
+        "lookupSourceSlot"
+        "doNormalTransfer"
+        "handleInterruptEntry"
+        "Arch_maskCapRights"
+        "makeUserPDE"
+        "invokeTCB_WriteRegisters"
+        "map_kernel_frame"
+        "createNewObjects"
+        "handleSyscall"
+        "setMRs_fault"
+        "emptySlot"
+        "create_it_address_space"
+        "setupCallerCap"
+      "-exclude-end"
     ] ++ bigProofsAll;
     extra = {
       source = tmpSource.graph-refine;
@@ -304,8 +343,11 @@ in rec {
     args = [
       "hack-skip-smt-proof-checks"
 
-      "handleInterruptEntry" # sat
-      "handleSyscall" # sat
+      # "copyMRs"
+      "handleFaultReply"
+      # "unmapPage"
+      # "handleInterruptEntry" # sat
+      # "handleSyscall" # sat
     ];
     extra = {
       source = tmpSource.graph-refine;

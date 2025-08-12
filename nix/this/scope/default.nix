@@ -216,8 +216,8 @@ with self; {
 
   slower = writeText "slower" (toString ([
     slow
-    # cProofs
-    l4vAll
+    cProofs
+    # l4vAll
   ] ++ lib.optionals scopeConfig.bvSupport [
   ]));
 
