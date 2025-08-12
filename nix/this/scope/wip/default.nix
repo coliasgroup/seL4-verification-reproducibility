@@ -108,6 +108,7 @@ in rec {
 
   keep = [
     scopes.ARM.o1.withChannel.release.upstream.keepHere
+    scopes.ARM.o1.withChannel.tip.upstream.keepHere
   ];
 
   keepHere = writeText "keep" (toString (lib.flatten [
