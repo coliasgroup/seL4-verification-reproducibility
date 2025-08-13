@@ -316,8 +316,9 @@ in rec {
     args = [
       "hack-skip-smt-proof-checks"
 
-      "handleInterruptEntry" # sat
-      "handleSyscall" # sat
+      "copyMRs" # sat
+      # "handleInterruptEntry" # sat
+      # "handleSyscall" # sat
     ];
     extra = {
       source = tmpSource.graph-refine;
