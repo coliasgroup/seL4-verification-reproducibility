@@ -107,6 +107,7 @@ in rec {
   ]));
 
   keep = writeText "keep" (toString (lib.flatten [
+    scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
     scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
     # scopes.ARM.o1.withChannel.release.upstream.all
