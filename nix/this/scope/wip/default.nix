@@ -351,7 +351,9 @@ in rec {
     args = [
       "hack-skip-smt-proof-checks"
 
-      "copyMRs" # sat
+      # "copyMRs"
+      "handleFaultReply"
+      "unmapPage"
       # "handleInterruptEntry" # sat
       # "handleSyscall" # sat
     ];
