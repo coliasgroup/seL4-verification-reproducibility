@@ -111,6 +111,14 @@ in rec {
     scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
     scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
     scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
+    o1.big
+    o1.small
+    o1.focused
+    o1.example
+    o2.big
+    o2.small
+    o2.focused
+    o2.example
     # todo
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
     scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
