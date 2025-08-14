@@ -107,7 +107,6 @@ in rec {
   ]));
 
   keep = writeText "keep" (toString (lib.flatten [
-    # done
     scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
     scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
     scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
@@ -119,7 +118,10 @@ in rec {
     o2.small
     o2.focused
     o2.example
-    # todo
+    scopes.ARM.o1.withChannel.release.downstream.l4vAll
+  ]));
+
+  todo = writeText "todo" (toString (lib.flatten [
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
     scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
     # scopes.ARM.o1.withChannel.release.upstream.all
