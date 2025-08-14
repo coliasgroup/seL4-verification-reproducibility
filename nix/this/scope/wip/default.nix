@@ -48,11 +48,11 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "e38ffeff280e8eaa692aa9118cd497b99256658c"; # branch nspin/wip/bv-sandbox
+      rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch nspin/wip/bv-sandbox
     };
 
-    # graph-refine = graph-refine-remote;
-    graph-refine = graph-refine-local;
+    graph-refine = graph-refine-remote;
+    # graph-refine = graph-refine-local;
   };
 
 in rec {
@@ -110,14 +110,14 @@ in rec {
     scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
     scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
     scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
-    o1.big
-    o1.small
-    o1.focused
-    o1.example
-    o2.big
-    o2.small
-    o2.focused
-    o2.example
+    # o1.big
+    # o1.small
+    # o1.focused
+    # o1.example
+    # o2.big
+    # o2.small
+    # o2.focused
+    # o2.example
     scopes.ARM.o1.withChannel.release.downstream.l4vAll
   ]));
 
