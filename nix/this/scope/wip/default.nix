@@ -141,8 +141,8 @@ in rec {
     ))
   ]));
 
-  # default = o1;
-  default = o2;
+  default = o1;
+  # default = o2;
   o1 = scopes.ARM.o1.withChannel.release.upstream.wip;
   o2 = scopes.ARM.o2.withChannel.release.upstream.wip;
   d = {
