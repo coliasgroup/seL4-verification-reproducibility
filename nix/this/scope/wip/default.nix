@@ -106,7 +106,7 @@ in rec {
     scopes.X64.withChannel.release.upstream.cProofs
   ]));
 
-  keep = writeText "keep" (toString (lib.flatten [
+  cached = writeText "cached" (toString (lib.flatten [
     scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
     scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
     scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
