@@ -51,8 +51,8 @@ let
       rev = "e38ffeff280e8eaa692aa9118cd497b99256658c"; # branch nspin/wip/bv-sandbox
     };
 
-    graph-refine = graph-refine-remote;
-    # graph-refine = graph-refine-local;
+    # graph-refine = graph-refine-remote;
+    graph-refine = graph-refine-local;
   };
 
 in rec {
@@ -353,7 +353,7 @@ in rec {
 
       # "copyMRs"
       "handleFaultReply"
-      "unmapPage"
+      # "unmapPage"
       # "handleInterruptEntry" # sat
       # "handleSyscall" # sat
     ];
