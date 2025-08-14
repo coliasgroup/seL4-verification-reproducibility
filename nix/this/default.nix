@@ -374,6 +374,7 @@ rec {
 
   cached = writeText "aggregate-cached" (toString (lib.flatten [
     # TODO
+    defaultScope.wip.cached
   ]));
 
   displayStatus =
