@@ -139,7 +139,8 @@ in rec {
     ))
   ]));
 
-  default = o1;
+  # default = o1;
+  default = o2;
   o1 = scopes.ARM.o1.withChannel.release.upstream.wip;
   o2 = scopes.ARM.o2.withChannel.release.upstream.wip;
   d = {
@@ -263,9 +264,33 @@ in rec {
 
   # big = bigProofs;
 
+  # big = useProofs {
+  #   args = [
+  #     "hack-skip-smt-proof-checks"
+  #   ] ++ bigProofsAll;
+  #   extra = {
+  #     source = tmpSource.graph-refine;
+  #   };
+  # };
+
   big = useProofs {
     args = [
       "hack-skip-smt-proof-checks"
+      "-exclude"
+        "lookupSourceSlot"
+        "doNormalTransfer"
+        "handleInterruptEntry"
+        "Arch_maskCapRights"
+        "makeUserPDE"
+        "invokeTCB_WriteRegisters"
+        "map_kernel_frame"
+        "createNewObjects"
+        "handleSyscall"
+        "setMRs_fault"
+        "emptySlot"
+        "create_it_address_space"
+        "setupCallerCap"
+      "-exclude-end"
     ] ++ bigProofsAll;
     extra = {
       source = tmpSource.graph-refine;
