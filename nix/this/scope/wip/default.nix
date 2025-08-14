@@ -261,14 +261,16 @@ in rec {
 
   useProofs = useProofsFrom bigProofs;
 
-  big = useProofs {
-    args = [
-      "hack-skip-smt-proof-checks"
-    ] ++ bigProofsAll;
-    extra = {
-      source = tmpSource.graph-refine;
-    };
-  };
+  big = bigProofs;
+
+  # big = useProofs {
+  #   args = [
+  #     "hack-skip-smt-proof-checks"
+  #   ] ++ bigProofsAll;
+  #   extra = {
+  #     source = tmpSource.graph-refine;
+  #   };
+  # };
 
   small = useProofs {
     args = [
