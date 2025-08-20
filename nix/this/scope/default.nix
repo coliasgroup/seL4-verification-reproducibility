@@ -65,6 +65,11 @@ with self; {
     simplExport = scopeConfig.bvSetupSupport;
   };
 
+  forceSimplExport = l4vWith {
+    name = "force-simpl-export";
+    simplExport = true;
+  };
+
   minimalBinaryVerificationInputs = l4vWith {
     name = "minimal-bv-input";
     buildStandaloneCParser = true;

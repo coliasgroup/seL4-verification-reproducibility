@@ -119,6 +119,11 @@ in rec {
     o2.focused
     o2.example
     scopes.ARM.o1.withChannel.release.downstream.l4vAll
+    scopes.RISCV64.o1.withChannel.release.upstream.graphRefine.all.targetDir
+    # scopes.RISCV64.o2.withChannel.release.upstream.decompilation # hangs? (8+ hours)
+    scopes.RISCV64.o2.withChannel.release.upstream.forceSimplExport
+    scopes.AARCH64.o1.withChannel.release.upstream.decompilation
+    # scopes.AARCH64.o1.withChannel.release.upstream.forceSimplExport # unsupported
   ]));
 
   todo = writeText "todo" (toString (lib.flatten [
