@@ -48,7 +48,7 @@ let
 
     graph-refine-remote = fetchGitFromColiasGroup {
       repo = "graph-refine";
-      rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch nspin/wip/bv-sandbox
+      rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch handoff
     };
 
     graph-refine = graph-refine-remote;
