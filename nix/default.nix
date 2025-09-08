@@ -14,7 +14,7 @@ let
   };
 
   pkgs = import ../nixpkgs/pkgs/top-level {
-    localSystem = "x86_64-linux";
+    localSystem.system = builtins.currentSystem;
     overlays = [
       overlay
     ];
