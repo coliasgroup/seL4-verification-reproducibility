@@ -27,7 +27,8 @@ stdenvForHol4.mkDerivation {
   phases = [ "unpackPhase" "patchPhase" "buildPhase" ];
 
   nativeBuildInputs = [
-    polymlForHol4 mltonForHol4
+    polymlForHol4
+    # mltonForHol4
     python3 perl
     graphviz
   ];
