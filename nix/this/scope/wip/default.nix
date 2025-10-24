@@ -349,10 +349,12 @@ in rec {
       "hack-skip-smt-proof-checks"
 
       # "copyMRs"
-      "handleFaultReply"
+      # "handleFaultReply"
       # "unmapPage"
       # "handleInterruptEntry" # sat
       # "handleSyscall" # sat
+      # "arch_clean_invalidate_L1_caches"
+      "create_frames_of_region"
     ];
     extra = {
       source = tmpSource.graph-refine;
