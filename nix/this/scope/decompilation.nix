@@ -15,6 +15,8 @@ let
   # NOTE only change to this list since seL4-12.0.0 is the addition of "_start"
   ignoreList = [
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
+    # "copyMRs"
+    # "tcb_queue_remove"
   ];
 
   # ignoreFile = runCommand "ignore" {} ''
