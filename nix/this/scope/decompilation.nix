@@ -17,6 +17,8 @@ let
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
     # "copyMRs"
     # "tcb_queue_remove"
+  ] ++ lib.optionals (scopeConfig.arch == "RISCV64") [
+    "chooseThread" # TODO
   ];
 
   # ignoreFile = runCommand "ignore" {} ''
