@@ -47,7 +47,7 @@ let
 
     cd ${hol4}/examples/machine-code/graph
     echo "decompiling..."
-    ${hol4}/bin/hol < $script > $target_dir/log.txt
+    ${hol4}/bin/hol < $script | tee $target_dir/log.txt
     cp -r $target_dir $out
   '';
 in
