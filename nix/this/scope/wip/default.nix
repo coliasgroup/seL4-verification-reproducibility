@@ -69,7 +69,7 @@ in rec {
     scopes.RISCV64.withGCC.gcc13.o1.decompilation
     scopes.RISCV64.withGCC.gcc13.o2.decompilation # without chooseThread
     scopes.RISCV64.withGCC.gcc14.o1.decompilation
-    scopes.RISCV64.withGCC.gcc14.o2.decompilation # without chooseThread
+    scopes.RISCV64.withGCC.gcc14.o2.decompilation # without chooseThread and create_untypeds_for_region
   ]));
 
   rmUnreachable =
