@@ -135,7 +135,7 @@ rec {
   targetCCWrapperAttrForConfig = { arch, bvSupport }: if bvSupport then "gcc6" else "gcc12";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13"
+    "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13" "gcc14"
   ]);
 
   targetPkgsByL4vArch = {
