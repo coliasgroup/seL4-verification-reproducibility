@@ -17,14 +17,24 @@ let
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
     # "copyMRs"
     # "tcb_queue_remove"
-  ] ++ lib.optionals (scopeConfig.arch == "RISCV64" && scopeConfig.optLevel == "-O2") [
+  ] ++ lib.optionals (
+    scopeConfig.arch == "RISCV64"
+      && scopeConfig.targetCCWrapperAttr == "gcc6"
+      && scopeConfig.optLevel == "-O2"
+  ) [
     "chooseThread" # TODO
-  ] ++ lib.optionals (scopeConfig.arch == "AARCH64") [
-    "copyMRs"
-    "tcb_queue_remove"
-    "resolveAddressBits"
-    "lookupPTSlot"
-    "str_to_long" # slow or hangs
+  ] ++ lib.optionals (
+    scopeConfig.arch == "RISCV64"
+      && scopeConfig.targetCCWrapperAttr == "gcc13"
+      && scopeConfig.optLevel == "-O2"
+  ) [
+    "chooseThread" # TODO
+  ] ++ lib.optionals (
+    scopeConfig.arch == "RISCV64"
+      && scopeConfig.targetCCWrapperAttr == "gcc14"
+      && scopeConfig.optLevel == "-O2"
+  ) [
+    "create_untypeds_for_region" # TODO
   ];
 
   # ignoreFile = runCommand "ignore" {} ''
