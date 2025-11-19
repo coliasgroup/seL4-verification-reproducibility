@@ -6,6 +6,8 @@
 , polymlForHol4
 , mltonForHol4
 , hol4Source
+
+, gmp
 }:
 
 # TODO
@@ -27,9 +29,11 @@ stdenvForHol4.mkDerivation {
   phases = [ "unpackPhase" "patchPhase" "buildPhase" ];
 
   nativeBuildInputs = [
-    polymlForHol4 mltonForHol4
+    polymlForHol4
+    # mltonForHol4
     python3 perl
     graphviz
+    gmp
   ];
 
   # FONTCONFIG_FILE = makeFontsConf { fontDirectories = [ ]; };
@@ -48,7 +52,7 @@ stdenvForHol4.mkDerivation {
     cd $holdir
 
     poly < tools/smart-configure.sml
-    bin/build # TODO -j $NIX_BUILD_CORES
+    bin/build -j $NIX_BUILD_CORES
     (cd examples/machine-code/graph && $holdir/bin/Holmake -j $NIX_BUILD_CORES)
   '';
 

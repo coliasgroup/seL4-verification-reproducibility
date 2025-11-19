@@ -9,6 +9,7 @@
 , python3Packages
 , python2
 , polyml
+, polyml57
 , mlton
 , mlton20180207
 , mlton20210117
@@ -186,7 +187,7 @@ with self; {
 
   stdenvForHol4 = gcc9Stdenv;
 
-  polymlForHol4 = lib.overrideDerivation polyml (attrs: {
+  polymlForHol4 = lib.overrideDerivation polyml57 (attrs: {
     configureFlags = [ "--enable-shared" ];
   });
 
