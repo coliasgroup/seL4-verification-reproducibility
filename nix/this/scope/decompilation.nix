@@ -19,21 +19,22 @@ let
     # "tcb_queue_remove"
   ] ++ lib.optionals (
     scopeConfig.arch == "RISCV64"
-      && scopeConfig.targetCCWrapperAttr == "gcc6"
+      && scopeConfig.targetCC.version == "12.4.0"
       && scopeConfig.optLevel == "-O2"
   ) [
     "chooseThread" # TODO
   ] ++ lib.optionals (
     scopeConfig.arch == "RISCV64"
-      && scopeConfig.targetCCWrapperAttr == "gcc13"
+      && scopeConfig.targetCC.version == "13.3.0"
       && scopeConfig.optLevel == "-O2"
   ) [
     "chooseThread" # TODO
   ] ++ lib.optionals (
     scopeConfig.arch == "RISCV64"
-      && scopeConfig.targetCCWrapperAttr == "gcc14"
+      && scopeConfig.targetCC.version == "14.2.0"
       && scopeConfig.optLevel == "-O2"
   ) [
+    "chooseThread" # TODO
     "create_untypeds_for_region" # TODO
   ];
 
