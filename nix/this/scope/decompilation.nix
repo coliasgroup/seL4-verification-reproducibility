@@ -24,6 +24,7 @@ let
     "tcb_queue_remove"
     "resolveAddressBits"
     "lookupPTSlot"
+    "str_to_long" # slow or hangs
   ];
 
   # ignoreFile = runCommand "ignore" {} ''
