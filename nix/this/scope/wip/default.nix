@@ -63,8 +63,9 @@ in rec {
     scopes.ARM.withGCC.gcc13.o2.withChannel.release.upstream.decompilation
     scopes.ARM.withGCC.gcc13.o1.withChannel.release.upstream.decompilation
     scopes.RISCV64.o1.withChannel.release.upstream.decompilation
+    scopes.RISCV64.o2.withChannel.release.upstream.decompilation # without chooseThread
+    scopes.RISCV64.withGCC.gcc13.o1.withChannel.release.upstream.decompilation
   ]));
-    # scopes.RISCV64.withGCC.gcc13.o1.withChannel.release.upstream.decompilation
 
   rmUnreachable =
     let

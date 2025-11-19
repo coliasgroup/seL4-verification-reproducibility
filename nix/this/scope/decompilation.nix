@@ -22,6 +22,8 @@ let
   ] ++ lib.optionals (scopeConfig.arch == "AARCH64") [
     "copyMRs"
     "tcb_queue_remove"
+    "resolveAddressBits"
+    "lookupPTSlot"
   ];
 
   # ignoreFile = runCommand "ignore" {} ''
