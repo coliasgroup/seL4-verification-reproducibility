@@ -21,13 +21,13 @@ let
     "chooseThread" # TODO
   ];
 
-  # ignoreFile = runCommand "ignore" {} ''
-  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v memzero | tr '\n' ',' | sed 's/,$/\n/' > $out
-  # '';
-
   ignoreFile = runCommand "ignore" {} ''
-    cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v cap_get_capSizeBits | tr '\n' ',' | sed 's/,$/\n/' > $out
+    cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v memzero | tr '\n' ',' | sed 's/,$/\n/' > $out
   '';
+
+  # ignoreFile = runCommand "ignore" {} ''
+  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v cap_get_capSizeBits | tr '\n' ',' | sed 's/,$/\n/' > $out
+  # '';
 
 # Export FAILED for activateThread.
 # Export FAILED for cap_get_capSizeBits.
