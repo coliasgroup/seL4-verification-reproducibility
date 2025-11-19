@@ -19,6 +19,9 @@ let
     # "tcb_queue_remove"
   ] ++ lib.optionals (scopeConfig.arch == "RISCV64" && scopeConfig.optLevel == "-O2") [
     "chooseThread" # TODO
+  ] ++ lib.optionals (scopeConfig.arch == "AARCH64") [
+    "copyMRs"
+    "tcb_queue_remove"
   ];
 
   # ignoreFile = runCommand "ignore" {} ''

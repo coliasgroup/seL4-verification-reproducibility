@@ -57,6 +57,14 @@ let
 
 in rec {
 
+  dstatus = writeText "x" (toString (lib.flatten [
+    scopes.ARM.o1.withChannel.release.upstream.decompilation
+    scopes.ARM.o2.withChannel.release.upstream.decompilation
+    scopes.ARM.withGCC.gcc13.o2.withChannel.release.upstream.decompilation
+    scopes.ARM.withGCC.gcc13.o1.withChannel.release.upstream.decompilation
+    scopes.RISCV64.o1.withChannel.release.upstream.decompilation
+  ]));
+
   rmUnreachable =
     let
       f = scope: scope.withRevs {
