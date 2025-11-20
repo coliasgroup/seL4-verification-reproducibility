@@ -19,7 +19,7 @@ stdenvNoCC.mkDerivation {
 
   postPatch = ''
     patchShebangs .
-  '' + lib.optionalString (
+  '' + /* HACK: */ lib.optionalString (
     scopeConfig.arch == "ARM"
       && scopeConfig.targetCC.version == "14.2.0"
   ) ''

@@ -15,8 +15,6 @@ let
   # NOTE only change to this list since seL4-12.0.0 is the addition of "_start"
   ignoreList = [
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
-    # "copyMRs"
-    # "tcb_queue_remove"
   ] ++ lib.optionals (
     scopeConfig.arch == "RISCV64"
       && scopeConfig.targetCC.version == "12.4.0"
@@ -34,7 +32,7 @@ let
       && scopeConfig.targetCC.version == "14.2.0"
       && scopeConfig.optLevel == "-O2"
   ) [
-    # "isHighestPrio"
+    # "isHighestPrio" # slow but does finish
     "chooseThread" # TODO
     "create_untypeds_for_region" # TODO
   ];
@@ -42,14 +40,6 @@ let
   # ignoreFile = runCommand "ignore" {} ''
   #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v memzero | tr '\n' ',' | sed 's/,$/\n/' > $out
   # '';
-
-  # ignoreFile = runCommand "ignore" {} ''
-  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v cap_get_capSizeBits | tr '\n' ',' | sed 's/,$/\n/' > $out
-  # '';
-
-# Export FAILED for activateThread.
-# Export FAILED for cap_get_capSizeBits.
-# Export FAILED for restart.
 
   ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
 

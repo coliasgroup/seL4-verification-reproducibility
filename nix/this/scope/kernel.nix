@@ -15,6 +15,7 @@
 assert scopeConfig.optLevel != null;
 
 runCommand "kernel" {
+
   nativeBuildInputs = [
     cmake ninja
     dtc libxml2
