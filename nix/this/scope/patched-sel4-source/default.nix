@@ -1,4 +1,5 @@
-{ stdenvNoCC
+{ lib
+, stdenvNoCC
 , python3
 , cmake
 , scopeConfig
@@ -18,7 +19,7 @@ stdenvNoCC.mkDerivation {
 
   postPatch = ''
     patchShebangs .
-  '' ++ lib.optionalString (
+  '' + lib.optionalString (
     scopeConfig.arch == "ARM"
       && scopeConfig.targetCC.version == "14.2.0"
   ) ''
