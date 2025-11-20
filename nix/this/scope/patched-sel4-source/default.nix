@@ -18,6 +18,12 @@ stdenvNoCC.mkDerivation {
 
   postPatch = ''
     patchShebangs .
+  '' ++ lib.optionalString (
+    scopeConfig.arch == "ARM"
+      && scopeConfig.targetCC.version == "14.2.0"
+  ) ''
+    substituteInPlace CMakeLists.txt \
+      --replace '-fno-stack-protector' '-fno-stack-protector -fno-jump-tables'
   '';
 
   installPhase = ''
