@@ -14,8 +14,7 @@
 
 assert scopeConfig.optLevel != null;
 
-runCommand "kernel" {
-
+runCommand "kernel" ({
   nativeBuildInputs = [
     cmake ninja
     dtc libxml2
@@ -39,7 +38,14 @@ runCommand "kernel" {
 
   CONFIG_OPTIMISATION = scopeConfig.optLevel;
 
-} ''
+} // lib.optionalAttrs (
+  scopeConfig.arch == "ARM"
+    && scopeConfig.targetCC.version == "14.2.0"
+) {
+  NIX_CLFAGS_COMPILE = [
+    "-fno-jump-tables"
+  ];
+}) ''
   export HOME=$(mktemp -d --suffix=-home)
 
   export ISABELLE_HOME=$(isabelle env sh -c 'echo $ISABELLE_HOME')
