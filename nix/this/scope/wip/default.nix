@@ -74,7 +74,7 @@ in rec {
 
   xxx = with graphRefine; graphRefineWith {
     argLists = [
-      coverageArgs
+      # coverageArgs
       (defaultArgs ++ [
         "create_frames_of_region"
       ])
