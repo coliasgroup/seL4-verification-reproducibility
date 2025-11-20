@@ -42,8 +42,8 @@ runCommand "kernel" ({
   scopeConfig.arch == "ARM"
     && scopeConfig.targetCC.version == "14.2.0"
 ) {
-  NIX_CLFAGS_COMPILE = [
-    "-fno-jump-tables"
+  NIX_CFLAGS_COMPILE = [
+    "-fno-jump-tabls"
   ];
 }) ''
   export HOME=$(mktemp -d --suffix=-home)
