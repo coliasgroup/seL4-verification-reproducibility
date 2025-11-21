@@ -60,8 +60,8 @@ rec {
           "init_freemem"
           "create_frames_of_region"
         ];
-        "ARM-O1-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" ];
-        "ARM-O2-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" "decodeARMMMUInvocation" ];
+        "ARM-O1-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" ]; # untested
+        "ARM-O2-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" "decodeARMMMUInvocation" ]; # untested
       }."${bvName}-${targetCC.name}" or (lib.warn "bvExclude not specified for ${bvName}" null))
     }:
     {
