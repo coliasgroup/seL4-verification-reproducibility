@@ -63,6 +63,7 @@ in rec {
     scopes.ARM.withGCC.gcc13.o1.decompilation
     scopes.ARM.withGCC.gcc13.o1.graphRefine.all
     scopes.ARM.withGCC.gcc13.o2.decompilation
+    scopes.ARM.withGCC.gcc13.o2.graphRefine.all
     scopes.ARM.withGCC.gcc14.o1.decompilation # bad jump tables
     scopes.ARM.withGCC.gcc14.o2.decompilation # bad jump tables
     scopes.RISCV64.o1.decompilation
