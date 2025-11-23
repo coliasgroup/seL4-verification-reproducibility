@@ -61,7 +61,7 @@ in rec {
     scopes.ARM.o1.decompilation
     scopes.ARM.o1.graphRefine.all
     scopes.ARM.o2.decompilation
-    # scopes.ARM.o2.graphRefine.all # TODO
+    scopes.ARM.o2.graphRefine.all
     scopes.ARM.withGCC.gcc13.o1.decompilation
     scopes.ARM.withGCC.gcc13.o1.graphRefine.all
     scopes.ARM.withGCC.gcc13.o2.decompilation
