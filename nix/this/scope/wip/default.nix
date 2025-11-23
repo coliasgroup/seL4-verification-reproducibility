@@ -68,6 +68,7 @@ in rec {
     scopes.ARM.withGCC.gcc14.o1.decompilation # bad jump tables
     scopes.ARM.withGCC.gcc14.o1.graphRefine.all
     scopes.ARM.withGCC.gcc14.o2.decompilation # bad jump tables
+    # scopes.ARM.withGCC.gcc14.o2.graphRefine.all # stack analysis failure
     scopes.RISCV64.o1.decompilation
     scopes.RISCV64.o2.decompilation # without chooseThread
     scopes.RISCV64.withGCC.gcc13.o1.decompilation
