@@ -8,6 +8,7 @@
 
 , patchedSeL4Source
 , scopeConfig
+, toolchainAttrs
 , standaloneCParser
 , isabelleForL4v
 , mltonForL4v
@@ -15,21 +16,6 @@
 
 assert scopeConfig.optLevel != null;
 
-let
-
-  toolchainAttrs =
-    let
-      inherit (scopeConfig) targetPrefix;
-      triple = scopeConfig.targetPkgs.hostPlatform.config;
-    in
-      assert targetPrefix == "" || targetPrefix == "${triple}-";
-      if scopeConfig.targetCCIsClang then {
-        TRIPLE = triple;
-      } else {
-        TOOLPREFIX = targetPrefix;
-      };
-
-in
 runCommand "kernel" ({
 
   nativeBuildInputs = [
