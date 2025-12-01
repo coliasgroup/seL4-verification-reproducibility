@@ -103,9 +103,6 @@ stdenv.mkDerivation (finalAttrs: ({
 
     cppLink
 
-    # TODO rm
-    scopeConfig.targetPkgs.stdenv.cc
-
     # breakpointHook bashInteractive
     # strace
   ];
@@ -113,9 +110,6 @@ stdenv.mkDerivation (finalAttrs: ({
   L4V_ARCH = scopeConfig.arch;
   L4V_FEATURES = scopeConfig.features;
   L4V_PLAT = scopeConfig.plat;
-
-  # TODO rm
-  TOOLPREFIX = scopeConfig.targetPkgs.stdenv.cc.targetPrefix;
 
   # TODO
   # What does this do?
