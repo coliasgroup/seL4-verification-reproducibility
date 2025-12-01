@@ -87,12 +87,6 @@ in rec {
     ];
   };
 
-  withClang = overrideScope (self: super: {
-    scopeConfig = super.scopeConfig.override {
-      targetCCWrapperAttr = "clang";
-    };
-  });
-
   rmUnreachable =
     let
       f = scope: scope.withRevs {

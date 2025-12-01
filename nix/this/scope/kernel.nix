@@ -22,7 +22,7 @@ let
       inherit (scopeConfig) targetPrefix;
       triple = scopeConfig.targetPkgs.hostPlatform.config;
     in
-      assert lib.trace triple (lib.trace targetPrefix false) || targetPrefix == "" || targetPrefix == "${triple}-";
+      assert targetPrefix == "" || targetPrefix == "${triple}-";
       if scopeConfig.targetCCIsClang then {
         TRIPLE = triple;
       } else {
