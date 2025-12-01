@@ -16,14 +16,6 @@
 assert scopeConfig.optLevel != null;
 
 let
-  files = [
-    "kernel_all.c_pp"
-    "kernel.elf"
-    "kernel.elf.rodata"
-    "kernel.elf.txt"
-    "kernel.elf.symtab"
-    "kernel.sigs"
-  ];
 
   toolchainAttrs =
     let
