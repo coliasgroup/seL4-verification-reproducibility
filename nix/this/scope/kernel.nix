@@ -12,6 +12,8 @@
 , standaloneCParser
 , isabelleForL4v
 , mltonForL4v
+
+, pkgsBuildBuild
 }:
 
 assert scopeConfig.optLevel != null;
@@ -28,11 +30,6 @@ runCommand "kernel" ({
     perl
     isabelleForL4v
     mltonForL4v
-  ];
-
-  depsBuildBuild = [
-    pkgsBuildBuild.llvmPackages.clang-unwrapped
-    pkgsBuildBuild.llvmPackages.bintools-unwrapped
   ];
 
   L4V_ARCH = scopeConfig.arch;

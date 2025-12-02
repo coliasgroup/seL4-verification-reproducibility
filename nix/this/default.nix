@@ -30,7 +30,10 @@ rec {
     , targetCCWrapper ? targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
     , targetCCIsClang ? targetCCWrapper.isClang
-    , targetBintools ? targetCCWrapper.bintools.bintools
+    , targetBintools ?
+        if targetCCIsClang
+        then pkgs.llvmPackages.bintools-unwrapped
+        else targetCCWrapper.bintools.bintools
     , targetPrefix ? targetCCWrapper.targetPrefix
 
     , localSeL4Source ? ../../projects/seL4
