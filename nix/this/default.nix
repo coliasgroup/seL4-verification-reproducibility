@@ -27,7 +27,10 @@ rec {
     , optLevel ? null
 
     , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
-    , targetCCWrapper ? targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
+    , targetCCWrapper ?
+        if lib.hasPrefix "clang" targetCCWrapperAttr
+        then pkgs."${targetCCWrapperAttr}"
+        else targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
     , targetCCIsClang ? targetCCWrapper.isClang
     , targetBintools ?
