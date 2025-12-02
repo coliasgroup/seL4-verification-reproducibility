@@ -33,6 +33,7 @@ with self; {
       assert targetPrefix == "" || targetPrefix == "${triple}-";
       if scopeConfig.targetCCIsClang then {
         TRIPLE = triple;
+        TOOLPREFIX = scopeConfig.targetPkgs.stdenv.cc.targetPrefix;
       } else {
         TOOLPREFIX = targetPrefix;
       };

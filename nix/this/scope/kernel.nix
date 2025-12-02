@@ -30,6 +30,11 @@ runCommand "kernel" ({
     mltonForL4v
   ];
 
+  depsBuildBuild = [
+    pkgsBuildBuild.llvmPackages.clang-unwrapped
+    pkgsBuildBuild.llvmPackages.bintools-unwrapped
+  ];
+
   L4V_ARCH = scopeConfig.arch;
   L4V_FEATURES = scopeConfig.features;
   L4V_PLAT = scopeConfig.plat;
