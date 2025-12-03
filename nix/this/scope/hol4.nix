@@ -24,12 +24,16 @@ let
   emacsForShell = emacsWithPackages (epkgs: [
   ]);
 
+  localSrc = toString ../../../projects/HOL4;
+
   emacsInit = writeText "init.el" ''
     (transient-mark-mode 1)
-    (load (concat (getenv "PWD") "/tools/hol-mode"))
-    (load (concat (getenv "PWD") "/tools/hol-unicode"))
-  '';
+    (load (concat "${localSrc}" "/tools/hol-mode"))
+    (load (concat "${localSrc}" "/tools/hol-unicode"))
 
+  '';
+    # (load (concat (getenv "PWD") "/tools/hol-mode"))
+    # (load (concat (getenv "PWD") "/tools/hol-unicode"))
 in
 
 stdenvForHol4.mkDerivation {
@@ -86,6 +90,10 @@ stdenvForHol4.mkDerivation {
 
     e() {
       emacs -l ${emacsInit}
+    }
+
+    ee() {
+      echo emacs -l ${emacsInit}
     }
   '';
 }
