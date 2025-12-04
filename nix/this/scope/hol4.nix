@@ -28,9 +28,8 @@ let
 
   emacsInit = writeText "init.el" ''
     (transient-mark-mode 1)
-    (load (concat "${localSrc}" "/tools/hol-mode"))
-    (load (concat "${localSrc}" "/tools/hol-unicode"))
-
+    (load (concat "${localSrc}" "/tools/editor-modes/emacs/hol-mode"))
+    (load (concat "${localSrc}" "/tools/editor-modes/emacs/hol-unicode"))
   '';
     # (load (concat (getenv "PWD") "/tools/hol-mode"))
     # (load (concat (getenv "PWD") "/tools/hol-unicode"))
