@@ -100,7 +100,7 @@ in rec {
 
   stackBounds = with graphRefine; graphRefineWith {
     name = "stackBounds";
-    args = excludeArgs ++ saveArgs;
+    args = excludeArgs;
   };
 
   rmUnreachable =
