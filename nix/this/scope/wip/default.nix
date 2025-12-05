@@ -51,8 +51,8 @@ let
       rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch handoff
     };
 
-    graph-refine = graph-refine-remote;
-    # graph-refine = graph-refine-local;
+    # graph-refine = graph-refine-remote;
+    graph-refine = graph-refine-local;
   };
 
 in rec {
@@ -79,13 +79,28 @@ in rec {
     scopes.RISCV64.withGCC.gcc14.o2.decompilation # without chooseThread and create_untypeds_for_region
   ]));
 
+  # xxx = with graphRefine; graphRefineWith {
+  #   argLists = [
+  #     # coverageArgs
+  #     (defaultArgs ++ [
+  #       "create_frames_of_region"
+  #     ])
+  #   ];
+  # };
+
   xxx = with graphRefine; graphRefineWith {
     argLists = [
-      # coverageArgs
-      (defaultArgs ++ [
-        "create_frames_of_region"
-      ])
+        (excludeArgs ++ defaultArgs ++ [
+          "all"
+        ])
     ];
+    source = tmpSource.graph-refine;
+    stackBounds = "${stackBounds}/StackBounds.txt";
+  };
+
+  stackBounds = with graphRefine; graphRefineWith {
+    name = "stackBounds";
+    args = excludeArgs ++ saveArgs;
   };
 
   rmUnreachable =
