@@ -37,11 +37,13 @@ let
     "create_untypeds_for_region" # TODO
   ];
 
-  # ignoreFile = runCommand "ignore" {} ''
-  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v memzero | tr '\n' ',' | sed 's/,$/\n/' > $out
-  # '';
+  keep = "invokeCNodeCancelBadgedSends";
 
-  ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
+  ignoreFile = runCommand "ignore" {} ''
+    cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
+  '';
+
+  # ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
 
   scriptIn = writeText "x.sml" ''
     load "decompileLib";
