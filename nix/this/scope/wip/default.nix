@@ -90,9 +90,10 @@ in rec {
 
   xxx = with graphRefine; graphRefineWith {
     argLists = [
-        (excludeArgs ++ defaultArgs ++ [
-          "all"
-        ])
+      (excludeArgs ++ coverageArgs)
+        # (excludeArgs ++ defaultArgs ++ [
+        #   "all"
+        # ])
     ];
     source = tmpSource.graph-refine;
     stackBounds = "${stackBounds}/StackBounds.txt";
