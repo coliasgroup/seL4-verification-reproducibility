@@ -61,6 +61,8 @@ runCommand "graph-refine${lib.optionalString (name != null) "-${name}"}-${scopeC
   # avoid warnings from solvers
   TERMINFO = "${ncurses.out}/share/terminfo/";
 
+  PYTHONUNBUFFERED = 1;
+
   passthru = {
     inherit
       solverList
