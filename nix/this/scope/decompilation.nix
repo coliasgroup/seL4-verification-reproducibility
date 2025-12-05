@@ -39,11 +39,11 @@ let
 
   keep = "invokeCNodeCancelBadgedSends";
 
-  ignoreFile = runCommand "ignore" {} ''
-    cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
-  '';
+  # ignoreFile = runCommand "ignore" {} ''
+  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
+  # '';
 
-  # ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
+  ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
 
   scriptIn = writeText "x.sml" ''
     load "decompileLib";
