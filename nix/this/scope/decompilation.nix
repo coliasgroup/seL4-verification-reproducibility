@@ -15,27 +15,28 @@ let
   # NOTE only change to this list since seL4-12.0.0 is the addition of "_start"
   ignoreList = [
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
-  ] ++ lib.optionals (
-    scopeConfig.arch == "RISCV64"
-      && scopeConfig.targetCC.version == "12.4.0"
-      && scopeConfig.optLevel == "-O2"
-  ) [
-    "chooseThread" # TODO
-  ] ++ lib.optionals (
-    scopeConfig.arch == "RISCV64"
-      && scopeConfig.targetCC.version == "13.3.0"
-      && scopeConfig.optLevel == "-O2"
-  ) [
-    "chooseThread" # TODO
-  ] ++ lib.optionals (
-    scopeConfig.arch == "RISCV64"
-      && scopeConfig.targetCC.version == "14.2.0"
-      && scopeConfig.optLevel == "-O2"
-  ) [
-    # "isHighestPrio" # slow but does finish
-    "chooseThread" # TODO
-    "create_untypeds_for_region" # TODO
   ];
+  # ] ++ lib.optionals (
+  #   scopeConfig.arch == "RISCV64"
+  #     && scopeConfig.targetCC.version == "12.4.0"
+  #     && scopeConfig.optLevel == "-O2"
+  # ) [
+  #   "chooseThread" # TODO
+  # ] ++ lib.optionals (
+  #   scopeConfig.arch == "RISCV64"
+  #     && scopeConfig.targetCC.version == "13.3.0"
+  #     && scopeConfig.optLevel == "-O2"
+  # ) [
+  #   "chooseThread" # TODO
+  # ] ++ lib.optionals (
+  #   scopeConfig.arch == "RISCV64"
+  #     && scopeConfig.targetCC.version == "14.2.0"
+  #     && scopeConfig.optLevel == "-O2"
+  # ) [
+  #   # "isHighestPrio" # slow but does finish
+  #   "chooseThread" # TODO
+  #   "create_untypeds_for_region" # TODO
+  # ];
 
   # ignoreFile = runCommand "ignore" {} ''
   #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v memzero | tr '\n' ',' | sed 's/,$/\n/' > $out
