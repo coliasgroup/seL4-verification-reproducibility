@@ -70,6 +70,7 @@ rec {
         "ARM-O1-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" ];
         "ARM-O2-arm-none-eabi-gcc-14.2.0" = [ ]; # untested
         "ARM-O1-clang-18.1.8" = [ "init_freemem" ];
+        "ARM-O2-clang-18.1.8" = [ "init_freemem" ];
       }."${bvName}-${targetCC.name}" or (lib.warn "bvExclude not specified for ${bvName}" null))
     }:
     {
