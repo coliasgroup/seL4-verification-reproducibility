@@ -30,7 +30,7 @@ stdenvNoCC.mkDerivation {
       && scopeConfig.targetCC.version == "13.3.0"
   ) ''
     substituteInPlace CMakeLists.txt \
-      --replace '-fno-stack-protector' '-fno-stack-protector -fno-tree-fre'
+      --replace '-fno-stack-protector' '-fno-stack-protector -fno-tree-fre -fno-gcse -fno-tree-pre'
   '';
 
   installPhase = ''

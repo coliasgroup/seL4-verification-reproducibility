@@ -85,11 +85,13 @@ in rec {
         # "create_frames_of_region"
         # "create_it_asid_pool"
         # "reserve_region"
-        "doNormalTransfer" # sat
+        # "doNormalTransfer" # sat
+        # "messageInfoFromWord"
+        "transferCaps"
       ])
     ];
-    solverList = debugSolverList;
-    keepBigLogs = true;
+    # solverList = debugSolverList;
+    # keepBigLogs = true;
     stackBounds = "${graphRefineWith {
       args = excludeArgs ++ defaultArgs;
     }}/StackBounds.txt";
