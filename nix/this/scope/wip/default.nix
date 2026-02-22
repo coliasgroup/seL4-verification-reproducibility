@@ -87,20 +87,17 @@ in rec {
         "doNormalTransfer"
       ])
     ];
+    solverList = debugSolverList;
+    keepBigLogs = true;
   };
 
   # nix-build -A scopes.ARM.withGCC.gcc13.o1.wip.xxx2
   xxx2 = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
-      # "create_it_asid_pool" # sat"
-        "finaliseSlot"
-        "strlcpy"
-        "doNormalTransfer"
-        "decodeARMMMUInvocation"
-        "create_it_asid_pool"
-        "create_initial_thread"
-        "reserve_region"
-        "handleFaultReply"
+        "doNormalTransfer" # sat
+        "decodeARMMMUInvocation" # except
+        "reserve_region" # sat
+        "handleFaultReply" # nosplit
     ];
     # source = tmpSource.graph-refine;
     # solverList = debugSolverList;
