@@ -51,8 +51,8 @@ let
       rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch handoff
     };
 
-    graph-refine = graph-refine-remote;
-    # graph-refine = graph-refine-local;
+    # graph-refine = graph-refine-remote;
+    graph-refine = graph-refine-local;
   };
 
 in rec {
@@ -82,9 +82,20 @@ in rec {
     argLists = [
       # coverageArgs
       (defaultArgs ++ [
-        "create_frames_of_region"
+        # "create_frames_of_region"
+        "create_it_asid_pool"
       ])
     ];
+  };
+
+  # nix-build -A scopes.ARM.withGCC.gcc13.o1.wip.xxx2
+  xxx2 = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+      "create_it_asid_pool" # sat"
+    ];
+    source = tmpSource.graph-refine;
+    solverList = debugSolverList;
+    keepBigLogs = true;
   };
 
   rmUnreachable =
