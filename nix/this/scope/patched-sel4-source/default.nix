@@ -25,6 +25,12 @@ stdenvNoCC.mkDerivation {
   ) ''
     substituteInPlace CMakeLists.txt \
       --replace '-fno-stack-protector' '-fno-stack-protector -fno-jump-tables'
+  '' + /* HACK: */ lib.optionalString (
+    scopeConfig.arch == "ARM"
+      && scopeConfig.targetCC.version == "13.3.0"
+  ) ''
+    substituteInPlace CMakeLists.txt \
+      --replace '-fno-stack-protector' '-fno-stack-protector -fno-tree-fre'
   '';
 
   installPhase = ''
