@@ -83,7 +83,8 @@ in rec {
       # coverageArgs
       (defaultArgs ++ [
         # "create_frames_of_region"
-        "create_it_asid_pool"
+        # "create_it_asid_pool"
+        "doNormalTransfer"
       ])
     ];
   };
@@ -91,11 +92,19 @@ in rec {
   # nix-build -A scopes.ARM.withGCC.gcc13.o1.wip.xxx2
   xxx2 = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
-      "create_it_asid_pool" # sat"
+      # "create_it_asid_pool" # sat"
+        "finaliseSlot"
+        "strlcpy"
+        "doNormalTransfer"
+        "decodeARMMMUInvocation"
+        "create_it_asid_pool"
+        "create_initial_thread"
+        "reserve_region"
+        "handleFaultReply"
     ];
-    source = tmpSource.graph-refine;
-    solverList = debugSolverList;
-    keepBigLogs = true;
+    # source = tmpSource.graph-refine;
+    # solverList = debugSolverList;
+    # keepBigLogs = true;
   };
 
   rmUnreachable =
