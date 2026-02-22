@@ -54,6 +54,11 @@ rec {
         "ARM-O1-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" ];
         "ARM-O2-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" "decodeARMMMUInvocation" ];
         "ARM-O1-arm-none-eabi-gcc-12.4.0" = [ "init_freemem" ];
+        "ARM-O1-arm-none-eabi-gcc-7.5.0" = [ "init_freemem" ];
+        "ARM-O1-arm-none-eabi-gcc-8.5.0" = [ "init_freemem" ];
+        "ARM-O1-arm-none-eabi-gcc-9.5.0" = [ "init_freemem" ];
+        "ARM-O1-arm-none-eabi-gcc-10.5.0" = [ "init_freemem" ];
+        "ARM-O1-arm-none-eabi-gcc-11.5.0" = [ "init_freemem" ];
         "ARM-O1-arm-none-eabi-gcc-13.3.0" = [ "init_freemem" ];
         "ARM-O2-arm-none-eabi-gcc-13.3.0" = [
           "decodeUntypedInvocation"
