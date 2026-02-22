@@ -84,11 +84,15 @@ in rec {
       (defaultArgs ++ [
         # "create_frames_of_region"
         # "create_it_asid_pool"
-        "doNormalTransfer"
+        # "reserve_region"
+        "doNormalTransfer" # sat
       ])
     ];
     solverList = debugSolverList;
     keepBigLogs = true;
+    stackBounds = "${graphRefineWith {
+      args = excludeArgs ++ defaultArgs;
+    }}/StackBounds.txt";
   };
 
   # nix-build -A scopes.ARM.withGCC.gcc13.o1.wip.xxx2
