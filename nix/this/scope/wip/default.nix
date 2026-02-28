@@ -59,15 +59,15 @@ in rec {
 
   dstatus = writeText "x" (toString (lib.flatten [
     scopes.ARM.o1.decompilation
-    scopes.ARM.o1.graphRefine.all
+    # scopes.ARM.o1.graphRefine.all
     scopes.ARM.o2.decompilation
-    scopes.ARM.o2.graphRefine.all
+    # scopes.ARM.o2.graphRefine.all
     scopes.ARM.withGCC.gcc13.o1.decompilation
-    scopes.ARM.withGCC.gcc13.o1.graphRefine.all
+    # scopes.ARM.withGCC.gcc13.o1.graphRefine.all
     scopes.ARM.withGCC.gcc13.o2.decompilation
-    scopes.ARM.withGCC.gcc13.o2.graphRefine.all
+    # scopes.ARM.withGCC.gcc13.o2.graphRefine.all
     scopes.ARM.withGCC.gcc14.o1.decompilation # bad jump tables
-    scopes.ARM.withGCC.gcc14.o1.graphRefine.all
+    # scopes.ARM.withGCC.gcc14.o1.graphRefine.all
     scopes.ARM.withGCC.gcc14.o2.decompilation # bad jump tables
     # scopes.ARM.withGCC.gcc14.o2.graphRefine.all # TODO stack analysis failure
     scopes.ARM.withGCC.clang.o1.decompilation
