@@ -50,6 +50,7 @@ let
     ${hol4}/bin/hol < $script | tee $target_dir/log.txt | grep '\( of \)\|\(Export FAILED\)'
     cp -r $target_dir $out
   '';
+  # TODO add "Exception-" to grep line above
 in
 runCommand "decompilation-checked" {
   passthru = {
