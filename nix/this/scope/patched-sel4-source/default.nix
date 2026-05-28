@@ -20,14 +20,17 @@ stdenvNoCC.mkDerivation {
   postPatch = ''
     patchShebangs .
   '' + /* HACK: */ lib.optionalString (
-    scopeConfig.arch == "ARM"
+    !scopeConfig.isClang
       && scopeConfig.targetCC.version == "14.2.0"
+      && scopeConfig.arch == "ARM"
   ) ''
     substituteInPlace CMakeLists.txt \
       --replace '-fno-stack-protector' '-fno-stack-protector -fno-jump-tables'
   '' + /* HACK: */ lib.optionalString (
-    scopeConfig.arch == "ARM"
+    !scopeConfig.isClang
       && scopeConfig.targetCC.version == "13.3.0"
+      && scopeConfig.optLevel == "-O2"
+      && scopeConfig.arch == "ARM"
   ) ''
     substituteInPlace CMakeLists.txt \
       --replace '-fno-stack-protector' '-fno-stack-protector -fno-tree-fre -fno-gcse -fno-tree-pre'
