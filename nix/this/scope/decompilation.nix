@@ -15,24 +15,7 @@ let
   # NOTE only change to this list since seL4-12.0.0 is the addition of "_start"
   ignoreList = [
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
-  ] ++ lib.optionals (
-    scopeConfig.targetCC.name == "riscv64-none-elf-gcc-12.4.0"
-      && scopeConfig.optLevel == "-O2"
-  ) [
-    "chooseThread" # TODO
-  ] ++ lib.optionals (
-    scopeConfig.targetCC.name == "riscv64-none-elf-gcc-13.3.0"
-      && scopeConfig.optLevel == "-O2"
-  ) [
-    "chooseThread" # TODO
-  ] ++ lib.optionals (
-    scopeConfig.targetCC.name == "riscv64-none-elf-gcc-14.2.0"
-      && scopeConfig.optLevel == "-O2"
-  ) [
-    # "isHighestPrio" # slow but does finish
-    "chooseThread" # TODO
-    "create_untypeds_for_region" # TODO
-  ];
+  ] ++ scopeConfig.extraDecompileExclude;
 
   keep = "invokeCNodeCancelBadgedSends";
 

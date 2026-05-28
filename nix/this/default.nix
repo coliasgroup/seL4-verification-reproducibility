@@ -55,7 +55,7 @@ rec {
     , useSeL4Isabelle ? true
 
     , l4vName ? "${arch}${nameModification features}${nameModification plat}"
-    , bvName ? "${l4vName}${optLevel}"
+    , bvName ? "${l4vName}${optLevel}" # TODO add compiler+version, and use in drv names
 
     , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
@@ -67,9 +67,17 @@ rec {
           (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
           [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
       ]
-    , decompileExclude ? (
-
-    )
+    , extraDecompileExclude ? lib.concatLists [
+        (lib.optionals
+          (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "12" && optLevel == "-O2")
+          [ "chooseThread" ])
+        (lib.optionals
+          (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14" && optLevel == "-O2")
+          [
+            # "isHighestPrio" # slow but does finish
+            "create_untypeds_for_region"
+          ])
+      ]
     , bvExclude ? ({
         "ARM-O1-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" ];
         "ARM-O2-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" "decodeARMMMUInvocation" ];
@@ -106,7 +114,7 @@ rec {
         seL4IsabelleSource
         useSeL4Isabelle
         extraKernelCFlags
-        decompileExclude
+        extraDecompileExclude
         bvSetupSupport
         bvSupport
         bvExclude
