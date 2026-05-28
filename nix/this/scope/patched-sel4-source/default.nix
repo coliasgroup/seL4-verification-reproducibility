@@ -19,17 +19,11 @@ stdenvNoCC.mkDerivation {
 
   postPatch = ''
     patchShebangs .
-  '' + /* HACK: */ lib.optionalString (
-    scopeConfig.targetCC.name == "arm-none-eabi-gcc-14.2.0"
-  ) ''
+  '' + lib.optionalString (scopeConfig.extraKernelCFlags != []) ''
     substituteInPlace CMakeLists.txt \
-      --replace '-fno-stack-protector' '-fno-stack-protector -fno-jump-tables'
-  '' + /* HACK: */ lib.optionalString (
-    scopeConfig.targetCC.name == "arm-none-eabi-gcc-13.3.0"
-      && scopeConfig.optLevel == "-O2"
-  ) ''
-    substituteInPlace CMakeLists.txt \
-      --replace '-fno-stack-protector' '-fno-stack-protector -fno-tree-fre -fno-gcse -fno-tree-pre'
+      --replace '-fno-stack-protector' '-fno-stack-protector ${
+        lib.concatStringsSep " " scopeConfig.extraKernelCFlags
+      }'
   '';
 
   installPhase = ''

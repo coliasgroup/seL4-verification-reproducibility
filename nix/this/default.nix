@@ -59,6 +59,17 @@ rec {
 
     , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
+    , extraKernelCFlags ? lib.concatLists [
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14")
+          [ "-fno-jump-tables" ])
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
+          [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
+      ]
+    , decompileExclude ? (
+
+    )
     , bvExclude ? ({
         "ARM-O1-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" ];
         "ARM-O2-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" "decodeARMMMUInvocation" ];
@@ -94,6 +105,8 @@ rec {
         binaryVerificationSource
         seL4IsabelleSource
         useSeL4Isabelle
+        extraKernelCFlags
+        decompileExclude
         bvSetupSupport
         bvSupport
         bvExclude
