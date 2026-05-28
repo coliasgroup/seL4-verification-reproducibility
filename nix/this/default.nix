@@ -32,7 +32,9 @@ rec {
         then pkgs."${targetCCWrapperAttr}"
         else targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
+    , targetCCIsGCC ? targetCCWrapper.isGNU
     , targetCCIsClang ? targetCCWrapper.isClang
+    , targetCCKind ? if targetCCIsGCC then "gcc" else if targetCCIsClang then "clang" else throw ""
     , targetBintools ?
         if targetCCIsClang
         then pkgs.llvmPackages.bintools-unwrapped
