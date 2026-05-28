@@ -57,7 +57,38 @@ let
 
 in rec {
 
-  decomp = writeText "x" (toString (lib.flatten [
+  theseScopes = [
+    scopes.ARM.o1
+    scopes.ARM.o2
+    scopes.ARM.withGCC.gcc13.o1
+    scopes.ARM.withGCC.gcc13.o2
+    scopes.ARM.withGCC.gcc14.o1 # bad jump tables
+    scopes.ARM.withGCC.gcc14.o2 # bad jump tables
+    scopes.ARM.withGCC.clang.o1
+    scopes.ARM.withGCC.clang.o2
+    scopes.RISCV64.o1
+    scopes.RISCV64.o2 # without chooseThread
+    scopes.RISCV64.withGCC.gcc13.o1
+    scopes.RISCV64.withGCC.gcc13.o2 # without chooseThread
+    scopes.RISCV64.withGCC.gcc14.o1
+    scopes.RISCV64.withGCC.gcc14.o2 # without chooseThread and create_untypeds_for_region
+
+    # TODO
+    # scopes.RISCV64.withGCC.clang.o1
+    # scopes.RISCV64.withGCC.clang.o2
+  ];
+
+  decomp = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    [ scope.decompilation ]
+  )));
+
+  coverage = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    lib.optionals (scope.scopeConfig.arch == "ARM") [
+      scope.graphRefine.coverage
+    ]
+  )));
+
+  decompx = writeText "x" (toString (lib.flatten [
     scopes.ARM.o1.decompilation
     scopes.ARM.o2.decompilation
     scopes.ARM.withGCC.gcc13.o1.decompilation
