@@ -62,5 +62,10 @@ runCommand "decompilation-checked" {
     false
   fi
 
+  if grep -Pzl 'Summary\n=======\n' ${unchecked}/log.txt; then
+    echo "Summary not present" >&2
+    false
+  fi
+
   cp -r ${unchecked} $out
 ''
