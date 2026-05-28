@@ -25,6 +25,20 @@ with self; {
   patchedSeL4Source = callPackage ./patched-sel4-source {};
   patchedL4vSource = callPackage ./patched-l4v-source {};
 
+  toolchainAttrs =
+    let
+      inherit (scopeConfig) targetPrefix;
+      triple = scopeConfig.targetPkgs.hostPlatform.config;
+    in
+      assert targetPrefix == "" || targetPrefix == "${triple}-";
+      if scopeConfig.targetCCIsClang then {
+        USE_LLVM = 1;
+        TRIPLE = triple;
+        TOOLPREFIX = scopeConfig.targetPkgs.stdenv.cc.targetPrefix;
+      } else {
+        TOOLPREFIX = targetPrefix;
+      };
+
   ### tools and proofs ###
 
   kernel = callPackage ./kernel.nix {};

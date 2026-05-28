@@ -70,6 +70,7 @@ in rec {
     scopes.ARM.withGCC.gcc14.o1.graphRefine.all
     scopes.ARM.withGCC.gcc14.o2.decompilation # bad jump tables
     # scopes.ARM.withGCC.gcc14.o2.graphRefine.all # TODO stack analysis failure
+    scopes.ARM.withGCC.clang.o1.decompilation
     scopes.RISCV64.o1.decompilation
     scopes.RISCV64.o2.decompilation # without chooseThread
     scopes.RISCV64.withGCC.gcc13.o1.decompilation
@@ -77,6 +78,15 @@ in rec {
     scopes.RISCV64.withGCC.gcc14.o1.decompilation
     scopes.RISCV64.withGCC.gcc14.o2.decompilation # without chooseThread and create_untypeds_for_region
   ]));
+
+  # xxx = with graphRefine; graphRefineWith {
+  #   argLists = [
+  #     # coverageArgs
+  #     (defaultArgs ++ [
+  #       "create_frames_of_region"
+  #     ])
+  #   ];
+  # };
 
   xxx = with graphRefine; graphRefineWith {
     argLists = [
@@ -108,6 +118,21 @@ in rec {
     # source = tmpSource.graph-refine;
     # solverList = debugSolverList;
     # keepBigLogs = true;
+
+  xxx3 = with graphRefine; graphRefineWith {
+    argLists = [
+      # (excludeArgs ++ coverageArgs)
+      (excludeArgs ++ defaultArgs ++ [
+        "decodeTCBInvocation"
+      ])
+    ];
+    source = tmpSource.graph-refine;
+    stackBounds = "${stackBounds}/StackBounds.txt";
+  };
+
+  stackBounds = with graphRefine; graphRefineWith {
+    name = "stackBounds";
+    args = excludeArgs;
   };
 
   rmUnreachable =

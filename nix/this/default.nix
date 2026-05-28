@@ -27,9 +27,16 @@ rec {
     , optLevel ? null
 
     , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
-    , targetCCWrapper ? targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
+    , targetCCWrapper ?
+        if lib.hasPrefix "clang" targetCCWrapperAttr
+        then pkgs."${targetCCWrapperAttr}"
+        else targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
-    , targetBintools ? targetCCWrapper.bintools.bintools
+    , targetCCIsClang ? targetCCWrapper.isClang
+    , targetBintools ?
+        if targetCCIsClang
+        then pkgs.llvmPackages.bintools-unwrapped
+        else targetCCWrapper.bintools.bintools
     , targetPrefix ? targetCCWrapper.targetPrefix
 
     , localSeL4Source ? ../../projects/seL4
@@ -68,13 +75,16 @@ rec {
         ];
         "ARM-O1-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" ];
         "ARM-O2-arm-none-eabi-gcc-14.2.0" = [ ]; # untested
+        "ARM-O1-clang-18.1.8" = [ "init_freemem" ];
+        "ARM-O2-clang-18.1.8" = [ "init_freemem" ];
       }."${bvName}-${targetCC.name}" or (lib.warn "bvExclude not specified for ${bvName}" null))
     }:
     {
+      targetPkgs = targetPkgsByL4vArch."${arch}";
       inherit
         arch mcs features plat
         optLevel
-        targetCC targetBintools targetPrefix
+        targetCC targetCCIsClang targetBintools targetPrefix
         seL4Source
         l4vSource
         hol4Source
@@ -151,6 +161,7 @@ rec {
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
     "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13" "gcc14"
+    "clang_11" "clang_12" "clang"
   ]);
 
   targetPkgsByL4vArch = {

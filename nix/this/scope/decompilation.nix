@@ -37,8 +37,10 @@ let
     "create_untypeds_for_region" # TODO
   ];
 
+  keep = "invokeCNodeCancelBadgedSends";
+
   # ignoreFile = runCommand "ignore" {} ''
-  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v memzero | tr '\n' ',' | sed 's/,$/\n/' > $out
+  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
   # '';
 
   ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);

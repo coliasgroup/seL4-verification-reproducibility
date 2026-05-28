@@ -10,6 +10,7 @@
 , patchedSeL4Source
 , patchedL4vSource
 , scopeConfig
+, toolchainAttrs
 , isabelleForL4v
 , mltonForL4v
 , texliveEnv
@@ -81,7 +82,7 @@ let
   };
 
 in
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: ({
   name = "l4v${lib.optionalString (name != null) "-${name}"}-${scopeConfig.l4vName}";
 
   nativeBuildInputs = [
@@ -109,7 +110,6 @@ stdenv.mkDerivation (finalAttrs: {
   L4V_ARCH = scopeConfig.arch;
   L4V_FEATURES = scopeConfig.features;
   L4V_PLAT = scopeConfig.plat;
-  TOOLPREFIX = scopeConfig.targetPrefix;
 
   # TODO
   # What does this do?
@@ -200,4 +200,4 @@ stdenv.mkDerivation (finalAttrs: {
   passthru = lib.optionalAttrs buildStandaloneCParser {
     standaloneCParserExe = "${finalAttrs.finalPackage}/tools/c-parser/standalone-parser/${finalAttrs.L4V_ARCH}/c-parser";
   };
-})
+} // toolchainAttrs))
