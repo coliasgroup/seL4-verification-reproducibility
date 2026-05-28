@@ -118,6 +118,7 @@ in rec {
     # source = tmpSource.graph-refine;
     # solverList = debugSolverList;
     # keepBigLogs = true;
+  };
 
   xxx3 = with graphRefine; graphRefineWith {
     argLists = [
