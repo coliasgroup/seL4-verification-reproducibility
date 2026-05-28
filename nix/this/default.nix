@@ -78,27 +78,23 @@ rec {
             "create_untypeds_for_region"
           ])
       ]
-    , bvExclude ? ({
-        "ARM-O1-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" ];
-        "ARM-O2-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" "decodeARMMMUInvocation" ];
-        "ARM-O1-arm-none-eabi-gcc-12.4.0" = [ "init_freemem" ];
-        "ARM-O1-arm-none-eabi-gcc-7.5.0" = [ "init_freemem" ];
-        "ARM-O1-arm-none-eabi-gcc-8.5.0" = [ "init_freemem" ];
-        "ARM-O1-arm-none-eabi-gcc-9.5.0" = [ "init_freemem" ];
-        "ARM-O1-arm-none-eabi-gcc-10.5.0" = [ "init_freemem" ];
-        "ARM-O1-arm-none-eabi-gcc-11.5.0" = [ "init_freemem" ];
-        "ARM-O1-arm-none-eabi-gcc-13.3.0" = [ "init_freemem" ];
-        "ARM-O2-arm-none-eabi-gcc-13.3.0" = [
-          "decodeUntypedInvocation"
-          "decodeARMMMUInvocation"
-          "init_freemem"
-          "create_frames_of_region"
-        ];
-        "ARM-O1-arm-none-eabi-gcc-14.2.0" = [ "init_freemem" ];
-        "ARM-O2-arm-none-eabi-gcc-14.2.0" = [ ]; # untested
-        "ARM-O1-clang-18.1.8" = [ "init_freemem" ];
-        "ARM-O2-clang-18.1.8" = [ "init_freemem" ];
-      }."${bvName}-${targetCC.name}" or (lib.warn "bvExclude not specified for ${bvName}" null))
+    , bvExclude ?
+      lib.concatLists [
+        (lib.optionals
+          (arch == "ARM")
+          [ "init_freemem" ])
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "6" && optLevel == "-O2")
+          [ "decodeARMMMUInvocation" ])
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "13" && optLevel == "-O2")
+          [
+            "decodeARMMMUInvocation"
+            "decodeUntypedInvocation"
+            "create_frames_of_region"
+          ])
+        # NOTE ARM-O2-gcc-14.2.0 untested
+      ]
     }:
     {
       targetPkgs = targetPkgsByL4vArch."${arch}";
