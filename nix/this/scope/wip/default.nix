@@ -83,7 +83,7 @@ in rec {
   )));
 
   save = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
-    lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.isGCC) [
+    lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC) [
       scope.graphRefine.justSave
     ]
   )));
@@ -95,7 +95,7 @@ in rec {
   )));
 
   coverage = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
-    lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.isGCC) [
+    lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC) [
       scope.graphRefine.coverage
     ]
   )));

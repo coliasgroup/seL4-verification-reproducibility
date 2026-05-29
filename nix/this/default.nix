@@ -102,7 +102,7 @@ rec {
       inherit
         arch mcs features plat
         optLevel
-        targetCC targetCCIsClang targetBintools targetPrefix
+        targetCC targetCCKind targetCCIsGCC targetCCIsClang targetBintools targetPrefix
         seL4Source
         l4vSource
         hol4Source
