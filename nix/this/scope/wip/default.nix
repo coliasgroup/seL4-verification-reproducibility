@@ -82,6 +82,12 @@ in rec {
     [ scope.decompilation ]
   )));
 
+  save = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    lib.optionals (scope.scopeConfig.arch == "ARM") [
+      scope.graphRefine.justSave
+    ]
+  )));
+
   coverage = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
     lib.optionals (scope.scopeConfig.arch == "ARM") [
       scope.graphRefine.coverage
