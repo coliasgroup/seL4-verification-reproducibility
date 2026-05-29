@@ -56,6 +56,7 @@ rec {
 
     , l4vName ? "${arch}${nameModification features}${nameModification plat}"
     , bvName ? "${l4vName}${optLevel}" # TODO add compiler+version, and use in drv names
+    , longBVName ? "${bvName}-${targetCCKind}-${targetCC.version}"
 
     , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]

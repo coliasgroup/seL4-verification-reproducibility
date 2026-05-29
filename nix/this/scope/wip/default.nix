@@ -147,6 +147,17 @@ in rec {
   #   ];
   # };
 
+  ttt = with graphRefine; graphRefineWith {
+    argLists = [
+      # coverageArgs
+      (saveArgs)
+    ];
+    # solverList = debugSolverList;
+    # keepBigLogs = true;
+    source = tmpSource.graph-refine;
+  };
+
+
   xxx = with graphRefine; graphRefineWith {
     argLists = [
       # coverageArgs
