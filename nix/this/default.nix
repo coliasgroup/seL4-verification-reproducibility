@@ -117,6 +117,7 @@ rec {
         bvExclude
         l4vName
         bvName
+        longBVName
       ;
     };
 
