@@ -18,7 +18,7 @@
 
 assert scopeConfig.optLevel != null;
 
-runCommand "kernel" ({
+runCommand "kernel-${scopeConfig.longBVName}" ({
 
   nativeBuildInputs = [
     cmake ninja

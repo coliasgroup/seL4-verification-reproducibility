@@ -30,7 +30,7 @@ let
     val _ = decompileLib.decomp "@path@" true "@ignore@";
   '';
 
-  unchecked = runCommand "decompilation" {
+  unchecked = runCommand "decompilation-${scopeConfig.longBVName}" {
     nativeBuildInputs = [
       git
     ];
