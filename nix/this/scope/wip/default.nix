@@ -87,15 +87,15 @@ in rec {
     ]
   )));
 
-  tsave = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
-    lib.optionals (scope.scopeConfig.arch == "ARM") [
-      scope.wip.ttt
-    ]
-  )));
-
   coverage = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
     lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC) [
       scope.graphRefine.coverage
+    ]
+  )));
+
+  tsave = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    lib.optionals (scope.scopeConfig.arch == "ARM") [
+      scope.wip.ttt
     ]
   )));
 
