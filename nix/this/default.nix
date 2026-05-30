@@ -70,7 +70,7 @@ rec {
       ]
     , extraDecompileExclude ? lib.concatLists [
         (lib.optionals
-          (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
+          (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "12" && optLevel == "-O2")
           [ "chooseThread" ])
         (lib.optionals
           (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14" && optLevel == "-O2")
