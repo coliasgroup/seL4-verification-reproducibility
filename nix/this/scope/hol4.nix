@@ -72,18 +72,19 @@ stdenvForHol4.mkDerivation {
     (cd examples/machine-code/graph && $holdir/bin/Holmake -j $NIX_BUILD_CORES)
   '';
 
+  # TODO longer aliases to avoid collisions
   shellHook = ''
     holdir=$PWD
 
-    xc() {
+    c() {
       poly < tools/smart-configure.sml
     }
 
-    xb() {
+    b() {
       bin/build -j$(nproc)
     }
 
-    xbe() {
+    be() {
       (cd examples/machine-code/graph && $holdir/bin/Holmake -j$(nproc))
     }
 
