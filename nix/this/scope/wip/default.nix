@@ -93,6 +93,12 @@ in rec {
     ]
   )));
 
+  xkeep = writeText "x" (toString (lib.flatten [
+    decomp
+    save
+    coverage
+  ]));
+
   tsave = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
     lib.optionals (scope.scopeConfig.arch == "ARM") [
       scope.wip.ttt
