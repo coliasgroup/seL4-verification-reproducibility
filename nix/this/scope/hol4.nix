@@ -75,15 +75,15 @@ stdenvForHol4.mkDerivation {
   shellHook = ''
     holdir=$PWD
 
-    c() {
+    xc() {
       poly < tools/smart-configure.sml
     }
 
-    b() {
+    xb() {
       bin/build -j$(nproc)
     }
 
-    be() {
+    xbe() {
       (cd examples/machine-code/graph && $holdir/bin/Holmake -j$(nproc))
     }
 

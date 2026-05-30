@@ -17,13 +17,13 @@ let
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
   ] ++ scopeConfig.extraDecompileExclude;
 
-  keep = "invokeCNodeCancelBadgedSends";
+  keep = "chooseThread";
 
-  # ignoreFile = runCommand "ignore" {} ''
-  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
-  # '';
+  ignoreFile = runCommand "ignore" {} ''
+    cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
+  '';
 
-  ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
+  # ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
 
   scriptIn = writeText "x.sml" ''
     load "decompileLib";
