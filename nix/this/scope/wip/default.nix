@@ -82,6 +82,7 @@ in rec {
     [ scope.decompilation ]
   )));
 
+  # TODO graph-refine can't figure out mutual recursion for clang codegen
   save = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
     lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC) [
       scope.graphRefine.justSave
