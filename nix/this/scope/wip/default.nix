@@ -72,10 +72,8 @@ in rec {
     scopes.RISCV64.withGCC.gcc13.o2 # without chooseThread
     scopes.RISCV64.withGCC.gcc14.o1
     scopes.RISCV64.withGCC.gcc14.o2 # without chooseThread and create_untypeds_for_region
-
-    # TODO
-    # scopes.RISCV64.withGCC.clang.o1
-    # scopes.RISCV64.withGCC.clang.o2
+    scopes.RISCV64.withGCC.clang.o1
+    scopes.RISCV64.withGCC.clang.o2
   ];
 
   decomp = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
