@@ -52,6 +52,7 @@ let
   '';
   # TODO add "Exception-" to grep line above
 in
+# TODO longBVName in name
 runCommand "decompilation-checked" {
   passthru = {
     inherit unchecked;
