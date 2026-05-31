@@ -74,13 +74,13 @@ rec {
         (lib.optionals
           (arch == "ARM")
           [ "init_freemem" ])
-        (lib.optionals
-          (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "6" && optLevel == "-O2")
-          [ "decodeARMMMUInvocation" ])
+        # (lib.optionals
+        #   (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "6" && optLevel == "-O2")
+        #   [ "decodeARMMMUInvocation" ])
         (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "13" && optLevel == "-O2")
           [
-            "decodeARMMMUInvocation"
+            # "decodeARMMMUInvocation"
             "decodeUntypedInvocation"
             "create_frames_of_region"
           ])
