@@ -17,7 +17,8 @@ let
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
   ] ++ scopeConfig.extraDecompileExclude;
 
-  keep = "chooseThread";
+  # keep = "chooseThread";
+  keep = "create_untypeds_for_region";
 
   ignoreFile = runCommand "ignore" {} ''
     cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
