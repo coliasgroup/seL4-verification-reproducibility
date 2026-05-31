@@ -68,17 +68,7 @@ rec {
           (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
           [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
       ]
-    , extraDecompileExclude ? lib.concatLists [
-        (lib.optionals
-          (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "12" && optLevel == "-O2")
-          [ "chooseThread" ])
-        (lib.optionals
-          (arch == "RISCV64" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14" && optLevel == "-O2")
-          [
-            # "isHighestPrio" # slow but does finish
-            "create_untypeds_for_region"
-          ])
-      ]
+    , extraDecompileExclude ? []
     , bvExclude ?
       lib.concatLists [
         (lib.optionals
