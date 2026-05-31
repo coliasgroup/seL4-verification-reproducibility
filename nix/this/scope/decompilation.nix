@@ -17,11 +17,11 @@ let
     "_start" "c_handle_fastpath_call" "c_handle_fastpath_reply_recv" "restore_user_context"
   ] ++ scopeConfig.extraDecompileExclude;
 
-  # keep = "chooseThread";
-  keep = "create_untypeds_for_region";
+  keep = "chooseThread";
+  # keep = "create_untypeds_for_region";
 
   # ignoreFile = runCommand "ignore" {} ''
-  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | tr '\n' ',' | sed 's/,$/\n/' > $out
+  #   cat ${kernel}/kernel.sigs | cut -d ' ' -f 2 | grep -v ${keep} | sed "s,StrictC',," | tr '\n' ',' | sed 's/,$/\n/' > $out
   # '';
 
   ignoreFile = writeText "ignore" (lib.concatStringsSep "," ignoreList);
@@ -54,7 +54,7 @@ let
   # TODO add "Exception-" to grep line above
 in
 # TODO longBVName in name
-runCommand "decompilation-checked" {
+runCommand "decompilation-checked-${scopeConfig.longBVName}" {
   passthru = {
     inherit unchecked;
   };

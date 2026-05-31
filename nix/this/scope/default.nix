@@ -76,11 +76,6 @@ with self; {
 
   justSimplExport = l4vWith {
     name = "simpl-export";
-    simplExport = scopeConfig.bvSetupSupport;
-  };
-
-  forceSimplExport = l4vWith {
-    name = "force-simpl-export";
     simplExport = true;
   };
 
