@@ -319,7 +319,7 @@ rec {
       inherit (self.withOptLevel) o0 o1 o2 o3;
 
       # TODO rename to withCC
-      withGCC = lib.flip lib.mapAttrs targetCCWrapperAttrs (_: targetCCWrapperAttr:
+      withCC = lib.flip lib.mapAttrs targetCCWrapperAttrs (_: targetCCWrapperAttr:
         overrideConfig {
           inherit targetCCWrapperAttr;
         }
