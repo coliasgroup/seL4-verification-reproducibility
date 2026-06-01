@@ -99,6 +99,10 @@ in rec {
     coverage
   ]));
 
+  xmore = writeText "x" (toString (lib.flatten [
+    scopes.ARM.o1.graphRefine.all
+  ]));
+
   tsave = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
     lib.optionals (scope.scopeConfig.arch == "ARM") [
       scope.wip.ttt
