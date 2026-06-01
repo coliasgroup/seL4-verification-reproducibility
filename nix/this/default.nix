@@ -62,11 +62,14 @@ rec {
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
     , extraKernelCFlags ? lib.concatLists [
         (lib.optionals
-          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14")
-          [ "-fno-jump-tables" ])
-        (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
           [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
+        # GCC 14+ use codgen for jump tables that the decompiler can't yet handle.
+        # Note that jump tables in some decode* functions slow graph-refine way down, but only on
+        # GCC <= 13 because jump tables are disabled otherwise.
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14")
+          [ "-fno-jump-tables" ])
       ]
     , extraDecompileExclude ? []
     , bvExclude ?
@@ -74,17 +77,15 @@ rec {
         (lib.optionals
           (arch == "ARM")
           [ "init_freemem" ])
-        # (lib.optionals
-        #   (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "6" && optLevel == "-O2")
-        #   [ "decodeARMMMUInvocation" ])
         (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "13" && optLevel == "-O2")
           [
+            # Inlined clz64 causes HOL4 to take a very long time on this function. Currently marked NO_INLINE.
             # "decodeARMMMUInvocation"
+
             "decodeUntypedInvocation"
             "create_frames_of_region"
           ])
-        # NOTE ARM-O2-gcc-14.2.0 untested
       ]
     }:
     {
