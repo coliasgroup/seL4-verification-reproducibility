@@ -149,14 +149,14 @@ in rec {
     scopes.RISCV64.withGCC.gcc14.o2.decompilation # without chooseThread and create_untypeds_for_region
   ]));
 
-  # xxx = with graphRefine; graphRefineWith {
-  #   argLists = [
-  #     # coverageArgs
-  #     (defaultArgs ++ [
-  #       "create_frames_of_region"
-  #     ])
-  #   ];
-  # };
+  cfo = with graphRefine; graphRefineWith {
+    argLists = [
+      # coverageArgs
+      (defaultArgs ++ [
+        "create_frames_of_region"
+      ])
+    ];
+  };
 
   ttt = with graphRefine; graphRefineWith {
     argLists = [

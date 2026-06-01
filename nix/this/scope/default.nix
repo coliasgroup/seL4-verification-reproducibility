@@ -20,7 +20,7 @@ with self; {
 
   ### sources ###
 
-  inherit (scopeConfig) hol4Source graphRefineSource binaryVerificationSource;
+  inherit (scopeConfig) hol4Source decompilerSource graphRefineSource binaryVerificationSource;
 
   patchedSeL4Source = callPackage ./patched-sel4-source {};
   patchedL4vSource = callPackage ./patched-l4v-source {};
@@ -95,6 +95,8 @@ with self; {
   simplExport = justSimplExport;
 
   hol4 = callPackage ./hol4.nix {};
+  hol4-core = callPackage ./hol4-core.nix {};
+  decompiler = callPackage ./decompiler.nix {};
 
   decompilation = callPackage ./decompilation.nix {};
 
