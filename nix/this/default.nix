@@ -46,9 +46,7 @@ rec {
     , localL4vSource ? ../../projects/l4v
     , l4vSource ? cleanL4vSource localL4vSource
     , localHol4Source ? ../../projects/HOL4
-    , hol4Source ? filterHol4Examples (cleanHol4Source localHol4Source)
-    , localDecompilerSource ? localHol4Source
-    , decompilerSource ? justHol4Examples (cleanHol4Source localDecompilerSource)
+    , hol4Source ? cleanHol4Source localHol4Source
     , localGraphRefineSource ? ../../projects/graph-refine
     , graphRefineSource ? gitignoreSource localGraphRefineSource
     , localBinaryVerificationSource ? ../../projects/binary-verification
@@ -98,7 +96,6 @@ rec {
         seL4Source
         l4vSource
         hol4Source
-        decompilerSource
         graphRefineSource
         binaryVerificationSource
         seL4IsabelleSource
@@ -226,13 +223,6 @@ rec {
       '';
     };
   };
-
-  filterHol4Examples = src: lib.cleanSourceWith {
-    inherit src;
-    filter = path: type: !(lib.hasPrefix (toString ((src.origSrc or src) + "/examples")) path);
-  };
-
-  justHol4Examples = src: src + "/examples";
 
   defaultSeL4IsabelleSource = downstreamGitIsabelleSource;
   # defaultSeL4IsabelleSource = upstreamGitIsabelleSource;
