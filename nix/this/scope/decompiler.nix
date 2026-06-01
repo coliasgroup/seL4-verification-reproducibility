@@ -44,9 +44,9 @@ stdenvForHol4.mkDerivation {
 
   phases = [ "unpackPhase" "patchPhase" "buildPhase" ];
 
-  depsBuildBuid = [
-    emacsForShell
-  ];
+  # depsBuildBuid = [
+  #   emacsForShell
+  # ];
 
   nativeBuildInputs = [
     polymlForHol4 mltonForHol4
@@ -63,9 +63,11 @@ stdenvForHol4.mkDerivation {
     cp -r --preserve=timestamps ${hol4-core} $holdir
     chmod -R +w $holdir
     cp -r . $holdir/examples
-    echo HOLDIR > $holdir/.holpath
+    cd $holdir
 
-    cd $holdir/examples/machine-code/graph
+    poly < tools/smart-configure.sml
+    bin/build --relocbuild
+    cd examples/machine-code/graph
     $holdir/bin/Holmake -j $NIX_BUILD_CORES
   '';
 

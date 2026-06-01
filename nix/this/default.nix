@@ -71,7 +71,8 @@ rec {
           [ "-fno-jump-tables" ])
         (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
-          [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])      ]
+          [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
+      ]
     , extraDecompileExclude ? []
     , bvExclude ?
       lib.concatLists [

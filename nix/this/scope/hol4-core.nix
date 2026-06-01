@@ -15,10 +15,6 @@
 # Address:
 # Fontconfig error: No writable cache directories
 
-# TODO
-# ./bin/build -j $NIX_BUILD_CORES
-# ./bin/build --relocbuild
-
 let
 in
 
@@ -41,14 +37,14 @@ stdenvForHol4.mkDerivation {
     patchShebangs .
   '';
 
-  buildPhase = ''
     # avoid noisy warning from fontconfig
     # export HOME=$(mktemp -d --suffix=-home)
-
+  buildPhase = ''
     cp -r . $out
     cd $out
 
     poly < tools/smart-configure.sml
-    bin/build -j $NIX_BUILD_CORES
+    bin/build -j $NIX_BUILD_CORES --relocbuild
+    bin/build cleanForReloc
   '';
 }
