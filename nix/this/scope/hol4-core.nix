@@ -44,7 +44,6 @@ stdenvForHol4.mkDerivation {
     cd $out
 
     poly < tools/smart-configure.sml
-    bin/build -j $NIX_BUILD_CORES --relocbuild
-    bin/build cleanForReloc
+    bin/build -j $NIX_BUILD_CORES
   '';
 }

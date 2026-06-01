@@ -65,10 +65,10 @@ stdenvForHol4.mkDerivation {
     cp -r . $holdir/examples
     cd $holdir
 
-    poly < tools/smart-configure.sml
-    bin/build --relocbuild
+    echo HOLDIR > $holdir/.holpath
+
     cd examples/machine-code/graph
-    $holdir/bin/Holmake -j $NIX_BUILD_CORES
+    $holdir/bin/Holmake -j $NIX_BUILD_CORES --holdir=$holdir
   '';
 
   # TODO longer aliases to avoid collisions
