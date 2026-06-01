@@ -1,6 +1,3 @@
 {
-  "rust-analyzer.linkedProjects": [
-    "projects/binary-verification/Cargo.toml",
-  ],
   "haskell.formattingProvider": "stylish-haskell",
 }
