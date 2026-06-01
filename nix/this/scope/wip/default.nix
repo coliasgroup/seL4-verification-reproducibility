@@ -51,11 +51,78 @@ let
       rev = "961b8286a1b72e1515b4dc2c43fc8fefb065384c"; # branch handoff
     };
 
-    graph-refine = graph-refine-remote;
-    # graph-refine = graph-refine-local;
+    # graph-refine = graph-refine-remote;
+    graph-refine = graph-refine-local;
   };
 
 in rec {
+
+  theseScopes = [
+    scopes.ARM.o1
+    scopes.ARM.o2
+    scopes.ARM.withGCC.gcc13.o1
+    scopes.ARM.withGCC.gcc13.o2
+    scopes.ARM.withGCC.gcc14.o1 # bad jump tables
+    scopes.ARM.withGCC.gcc14.o2 # bad jump tables
+    scopes.ARM.withGCC.clang.o1
+    scopes.ARM.withGCC.clang.o2
+    scopes.RISCV64.o1
+    scopes.RISCV64.o2 # without chooseThread
+    scopes.RISCV64.withGCC.gcc13.o1
+    scopes.RISCV64.withGCC.gcc13.o2 # without chooseThread
+    scopes.RISCV64.withGCC.gcc14.o1
+    scopes.RISCV64.withGCC.gcc14.o2 # without chooseThread and create_untypeds_for_region
+    scopes.RISCV64.withGCC.clang.o1
+    scopes.RISCV64.withGCC.clang.o2
+  ];
+
+  decomp = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    [ scope.decompilation ]
+  )));
+
+  # TODO graph-refine can't figure out mutual recursion for clang codegen
+  save = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC) [
+      scope.graphRefine.justSave
+    ]
+  )));
+
+  # TODO graph-refine can't figure out mutual recursion for clang codegen
+  coverage = writeText "x" (toString (lib.flip lib.concatMap theseScopes (scope:
+    lib.optionals (scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC) [
+      scope.graphRefine.coverage
+    ]
+  )));
+
+  preSearch = writeText "x" (toString (lib.flatten [
+    decomp
+    save
+    coverage
+  ]));
+
+  keep = writeText "x" (toString (lib.flatten [
+    preSearch
+    scopes.ARM.o1.graphRefine.all
+  ]));
+
+  # nix-build -A scopes.ARM.withCC.gcc13.o1.wip.ex
+  ex = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+        "doNormalTransfer" # sat
+        "decodeARMMMUInvocation" # except
+        "reserve_region" # sat
+        "handleFaultReply" # nosplit
+    ];
+    source = tmpSource.graph-refine;
+    # solverList = debugSolverList;
+    # keepBigLogs = true;
+    # stackBounds = "${stackBounds}/StackBounds.txt";
+  };
+
+  stackBounds = with graphRefine; graphRefineWith {
+    name = "stackBounds";
+    args = excludeArgs;
+  };
 
   rmUnreachable =
     let
@@ -106,25 +173,25 @@ in rec {
     scopes.X64.withChannel.release.upstream.cProofs
   ]));
 
-  cached = writeText "cached" (toString (lib.flatten [
-    scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
-    scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
-    scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
-    o1.big
-    o1.small
-    o1.focused
-    o1.example
-    o2.big
-    o2.small
-    o2.focused
-    o2.example
-    scopes.ARM.o1.withChannel.release.downstream.l4vAll
-    scopes.RISCV64.o1.withChannel.release.upstream.graphRefine.all.targetDir
-    # scopes.RISCV64.o2.withChannel.release.upstream.decompilation # hangs? (8+ hours)
-    scopes.RISCV64.o2.withChannel.release.upstream.forceSimplExport
-    scopes.AARCH64.o1.withChannel.release.upstream.decompilation
-    # scopes.AARCH64.o1.withChannel.release.upstream.forceSimplExport # unsupported
-  ]));
+  # cached = writeText "cached" (toString (lib.flatten [
+  #   scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
+  #   scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
+  #   scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
+  #   o1.big
+  #   o1.small
+  #   o1.focused
+  #   o1.example
+  #   o2.big
+  #   o2.small
+  #   o2.focused
+  #   o2.example
+  #   scopes.ARM.o1.withChannel.release.downstream.l4vAll
+  #   scopes.RISCV64.o1.withChannel.release.upstream.graphRefine.all.targetDir
+  #   # scopes.RISCV64.o2.withChannel.release.upstream.decompilation # hangs? (8+ hours)
+  #   scopes.RISCV64.o2.withChannel.release.upstream.forceSimplExport
+  #   scopes.AARCH64.o1.withChannel.release.upstream.decompilation
+  #   # scopes.AARCH64.o1.withChannel.release.upstream.forceSimplExport # unsupported
+  # ]));
 
   todo = writeText "todo" (toString (lib.flatten [
     scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
@@ -145,15 +212,6 @@ in rec {
         ]
     ))
   ]));
-
-  default = o1;
-  # default = o2;
-  o1 = scopes.ARM.o1.withChannel.release.upstream.wip;
-  o2 = scopes.ARM.o2.withChannel.release.upstream.wip;
-  d = {
-    o1 = scopes.ARM.o1.withChannel.release.downstream.wip;
-    o2 = scopes.ARM.o2.withChannel.release.downstream.wip;
-  };
 
   solvers = {
     online = {
@@ -349,10 +407,12 @@ in rec {
       "hack-skip-smt-proof-checks"
 
       # "copyMRs"
-      "handleFaultReply"
+      # "handleFaultReply"
       # "unmapPage"
       # "handleInterruptEntry" # sat
       # "handleSyscall" # sat
+      # "arch_clean_invalidate_L1_caches"
+      "create_frames_of_region"
     ];
     extra = {
       source = tmpSource.graph-refine;
@@ -399,36 +459,6 @@ in rec {
     source = tmpSource.graph-refine;
     solverList = debugOnlineOnlySolverList;
     keepBigLogs = true;
-  };
-
-  earlySearch = with graphRefine; graphRefineWith {
-    name = "early-search";
-    args = excludeArgs ++ defaultArgs ++ [
-      "coverage"
-    ];
-    source = tmpSource.graph-refine;
-    stackBounds = "${bigProofs}/StackBounds.txt";
-  };
-
-  earlySearchFast = with graphRefine; graphRefineWith {
-    name = "early-search-fast";
-    args = excludeArgs ++ defaultArgs ++ [
-      "coverage"
-    ];
-    source = tmpSource.graph-refine;
-    stackBounds = "${bigProofs}/StackBounds.txt";
-  };
-
-  # # #
-
-  xx = with graphRefine; graphRefineWith {
-    args = excludeArgs ++ defaultArgs ++ [
-      # "deps:handleInterruptEntry" # sat
-      # "deps:handleSyscall" # sat
-      "handleInterruptEntry" # sat
-      "handleSyscall" # sat
-
-    ];
   };
 
   # # #
