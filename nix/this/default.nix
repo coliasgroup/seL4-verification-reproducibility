@@ -168,11 +168,11 @@ rec {
     inherit (optLevels) o1 o2;
   };
 
-  targetCCWrapperAttrForConfig = { arch, bvSupport }: if bvSupport then "gcc6" else "gcc12";
+  targetCCWrapperAttrForConfig = { arch, bvSupport }: "gcc13";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13" "gcc14"
-    "clang_11" "clang_12" "clang"
+    "gcc13" "gcc14" "gcc15" "gcc16"
+    "clang_12" "clang"
   ]);
 
   targetPkgsByL4vArch = {

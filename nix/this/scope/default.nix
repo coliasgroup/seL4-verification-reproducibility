@@ -4,7 +4,6 @@
 , runCommand
 , writeText
 , linkFarm
-, gcc9Stdenv
 , texlive
 , python3Packages
 , python2
@@ -192,8 +191,6 @@ with self; {
   seL4IsabelleForL4v = mkIsabelleForL4v true;
 
   isabelleForL4v = if scopeConfig.useSeL4Isabelle then seL4IsabelleForL4v else upstreamIsabelleForL4v;
-
-  stdenvForHol4 = gcc9Stdenv;
 
   polymlForHol4 = lib.overrideDerivation polyml (attrs: {
     configureFlags = [ "--enable-shared" ];
