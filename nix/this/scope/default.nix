@@ -27,7 +27,7 @@ with self; {
   toolchainAttrs =
     let
       inherit (scopeConfig) targetPrefix;
-      triple = scopeConfig.targetPkgs.hostPlatform.config;
+      triple = scopeConfig.targetPkgs.stdenv.hostPlatform.config;
     in
       assert targetPrefix == "" || targetPrefix == "${triple}-";
       if scopeConfig.targetCCIsClang then {

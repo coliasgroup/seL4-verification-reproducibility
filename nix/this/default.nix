@@ -229,14 +229,14 @@ rec {
 
   downstreamGitIsabelleSource = builtins.fetchGit {
     url = "https://github.com/seL4/isabelle.git";
-    ref = "ts-2024";
-    rev = "e0dd5a6d89d2c0b37e7f1ffe0105050189136b75";
+    ref = "ts-2025";
+    rev = "836be93892924dfa8eaa1f262ce9d03fc0eef71e";
   };
 
   upstreamGitIsabelleSource = builtins.fetchGit {
     url = "https://github.com/seL4/isabelle.git";
-    ref = "Isabelle2024";
-    rev = "74b2d1278b57797572abe5842e318d17ed131c55";
+    ref = "Isabelle2025";
+    rev = "5cdba83cd9c7ee47081acb2df0e4a7b7a755cdce";
   };
 
   mkKeepRef = rev: "refs/tags/keep/${builtins.substring 0 32 rev}";

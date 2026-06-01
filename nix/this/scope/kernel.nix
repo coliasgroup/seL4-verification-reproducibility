@@ -2,7 +2,7 @@
 , runCommand
 , cmake, ninja
 , dtc, libxml2
-, python3Packages
+, python312Packages
 , perl
 , which
 
@@ -24,7 +24,7 @@ runCommand "kernel-${scopeConfig.longBVName}" ({
     cmake ninja
     dtc libxml2
     which
-    python3Packages.sel4-deps
+    python312Packages.sel4-deps
     scopeConfig.targetCC
     scopeConfig.targetBintools
     perl

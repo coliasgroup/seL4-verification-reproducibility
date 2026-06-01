@@ -1,6 +1,5 @@
 { lib
 , stdenv
-, hostPlatform
 , writeText
 , runCommand
 , fetchurl
@@ -107,7 +106,7 @@ let
     "x86-cygwin"
   ];
 
-  thisArch = hostPlatform.system;
+  thisArch = stdenv.hostPlatform.system;
 
   otherArches =
     assert lib.elem thisArch allArches;

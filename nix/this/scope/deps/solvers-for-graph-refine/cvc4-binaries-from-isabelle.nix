@@ -1,4 +1,4 @@
-{ lib, stdenv, hostPlatform, fetchurl }:
+{ lib, stdenv, fetchurl }:
 
 let
   mk = { version, hash }:
@@ -11,7 +11,7 @@ let
       };
       phases = [ "unpackPhase" "installPhase" ];
       installPhase = ''
-        install -D -t $out/bin ${hostPlatform.system}/cvc4
+        install -D -t $out/bin ${stdenv.hostPlatform.system}/cvc4
       '';
     };
 in {

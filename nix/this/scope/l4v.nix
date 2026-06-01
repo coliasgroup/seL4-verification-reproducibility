@@ -3,7 +3,7 @@
 , writeText
 , writeShellApplication
 , makeFontsConf
-, python3Packages
+, python312Packages
 , haskellPackages
 , rsync, git, perl, hostname, which, cmake, ninja, dtc, libxml2
 
@@ -94,7 +94,7 @@ stdenv.mkDerivation (finalAttrs: ({
     haskellPackages.cabal-install
     stackHack
 
-    python3Packages.sel4-deps
+    python312Packages.sel4-deps
 
     texliveEnv
 
