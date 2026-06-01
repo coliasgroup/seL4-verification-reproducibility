@@ -20,10 +20,24 @@ with self; {
 
   ### sources ###
 
-  inherit (scopeConfig) hol4Source graphRefineSource binaryVerificationSource;
+  inherit (scopeConfig) hol4Source decompilerSource graphRefineSource binaryVerificationSource;
 
   patchedSeL4Source = callPackage ./patched-sel4-source {};
   patchedL4vSource = callPackage ./patched-l4v-source {};
+
+  toolchainAttrs =
+    let
+      inherit (scopeConfig) targetPrefix;
+      triple = scopeConfig.targetPkgs.hostPlatform.config;
+    in
+      assert targetPrefix == "" || targetPrefix == "${triple}-";
+      if scopeConfig.targetCCIsClang then {
+        USE_LLVM = 1;
+        TRIPLE = triple;
+        TOOLPREFIX = scopeConfig.targetPkgs.stdenv.cc.targetPrefix;
+      } else {
+        TOOLPREFIX = targetPrefix;
+      };
 
   ### tools and proofs ###
 
@@ -62,11 +76,6 @@ with self; {
 
   justSimplExport = l4vWith {
     name = "simpl-export";
-    simplExport = scopeConfig.bvSetupSupport;
-  };
-
-  forceSimplExport = l4vWith {
-    name = "force-simpl-export";
     simplExport = true;
   };
 

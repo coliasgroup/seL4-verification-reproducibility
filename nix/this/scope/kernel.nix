@@ -4,21 +4,26 @@
 , dtc, libxml2
 , python3Packages
 , perl
+, which
 
 , patchedSeL4Source
 , scopeConfig
+, toolchainAttrs
 , standaloneCParser
 , isabelleForL4v
 , mltonForL4v
+
+, pkgsBuildBuild
 }:
 
 assert scopeConfig.optLevel != null;
 
-runCommand "kernel" {
+runCommand "kernel-${scopeConfig.longBVName}" ({
 
   nativeBuildInputs = [
     cmake ninja
     dtc libxml2
+    which
     python3Packages.sel4-deps
     scopeConfig.targetCC
     scopeConfig.targetBintools
@@ -30,7 +35,6 @@ runCommand "kernel" {
   L4V_ARCH = scopeConfig.arch;
   L4V_FEATURES = scopeConfig.features;
   L4V_PLAT = scopeConfig.plat;
-  TOOLPREFIX = scopeConfig.targetPrefix;
 
   OBJDUMP = "${scopeConfig.targetPrefix}objdump";
 
@@ -39,7 +43,7 @@ runCommand "kernel" {
 
   CONFIG_OPTIMISATION = scopeConfig.optLevel;
 
-} ''
+} // toolchainAttrs) ''
   export HOME=$(mktemp -d --suffix=-home)
 
   export ISABELLE_HOME=$(isabelle env sh -c 'echo $ISABELLE_HOME')

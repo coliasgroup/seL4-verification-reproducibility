@@ -27,9 +27,18 @@ rec {
     , optLevel ? null
 
     , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
-    , targetCCWrapper ? targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
+    , targetCCWrapper ?
+        if lib.hasPrefix "clang" targetCCWrapperAttr
+        then pkgs."${targetCCWrapperAttr}"
+        else targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
-    , targetBintools ? targetCCWrapper.bintools.bintools
+    , targetCCIsGCC ? targetCCWrapper.isGNU
+    , targetCCIsClang ? targetCCWrapper.isClang
+    , targetCCKind ? if targetCCIsGCC then "gcc" else if targetCCIsClang then "clang" else throw ""
+    , targetBintools ?
+        if targetCCIsClang
+        then pkgs.llvmPackages.bintools-unwrapped
+        else targetCCWrapper.bintools.bintools
     , targetPrefix ? targetCCWrapper.targetPrefix
 
     , localSeL4Source ? ../../projects/seL4
@@ -46,20 +55,44 @@ rec {
     , useSeL4Isabelle ? true
 
     , l4vName ? "${arch}${nameModification features}${nameModification plat}"
-    , bvName ? "${l4vName}${optLevel}"
+    , bvName ? "${l4vName}${optLevel}" # TODO add compiler+version, and use in drv names
+    , longBVName ? "${bvName}-${targetCCKind}-${targetCC.version}"
 
     , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
-    , bvExclude ? ({
-        "ARM-O1-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" ];
-        "ARM-O2-arm-none-eabi-gcc-6.5.0" = [ "init_freemem" "decodeARMMMUInvocation" ];
-      }."${bvName}-${targetCC.name}" or (lib.warn "bvExclude not specified for ${bvName}" null))
+    , extraKernelCFlags ? lib.concatLists [
+        # GCC 14+ use codgen for jump tables that the decompiler can't yet handle.
+        # Note that jump tables in some decode* functions slow graph-refine way down, but only on
+        # GCC <= 13 because jump tables are disabled otherwise.
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14")
+          [ "-fno-jump-tables" ])
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
+          [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
+      ]
+    , extraDecompileExclude ? []
+    , bvExclude ?
+      lib.concatLists [
+        (lib.optionals
+          (arch == "ARM")
+          [ "init_freemem" ])
+        (lib.optionals
+          (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "13" && optLevel == "-O2")
+          [
+            # Inlined clz64 causes HOL4 to take a very long time on this function. Currently marked NO_INLINE.
+            # "decodeARMMMUInvocation"
+            "decodeUntypedInvocation"
+            "create_frames_of_region"
+          ])
+      ]
     }:
     {
+      targetPkgs = targetPkgsByL4vArch."${arch}";
       inherit
         arch mcs features plat
         optLevel
-        targetCC targetBintools targetPrefix
+        targetCC targetCCKind targetCCIsGCC targetCCIsClang targetBintools targetPrefix
         seL4Source
         l4vSource
         hol4Source
@@ -67,11 +100,14 @@ rec {
         binaryVerificationSource
         seL4IsabelleSource
         useSeL4Isabelle
+        extraKernelCFlags
+        extraDecompileExclude
         bvSetupSupport
         bvSupport
         bvExclude
         l4vName
         bvName
+        longBVName
       ;
     };
 
@@ -135,7 +171,8 @@ rec {
   targetCCWrapperAttrForConfig = { arch, bvSupport }: if bvSupport then "gcc6" else "gcc12";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13"
+    "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13" "gcc14"
+    "clang_11" "clang_12" "clang"
   ]);
 
   targetPkgsByL4vArch = {
@@ -281,6 +318,7 @@ rec {
 
       inherit (self.withOptLevel) o0 o1 o2 o3;
 
+      # TODO rename to withCC
       withGCC = lib.flip lib.mapAttrs targetCCWrapperAttrs (_: targetCCWrapperAttr:
         overrideConfig {
           inherit targetCCWrapperAttr;

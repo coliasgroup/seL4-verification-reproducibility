@@ -1,4 +1,5 @@
-{ stdenvNoCC
+{ lib
+, stdenvNoCC
 , python3
 , cmake
 , scopeConfig
@@ -18,6 +19,11 @@ stdenvNoCC.mkDerivation {
 
   postPatch = ''
     patchShebangs .
+  '' + lib.optionalString (scopeConfig.extraKernelCFlags != []) ''
+    substituteInPlace CMakeLists.txt \
+      --replace '-fno-stack-protector' '-fno-stack-protector ${
+        lib.concatStringsSep " " scopeConfig.extraKernelCFlags
+      }'
   '';
 
   installPhase = ''
