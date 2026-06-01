@@ -275,6 +275,7 @@ with self; {
     "bin/cpp" = "${scopeConfig.targetCC}/bin/${scopeConfig.targetPrefix}cpp";
   };
 
+  hol4Env = callPackage ./hol4-env.nix {};
   l4vEnv = callPackage ./l4v-env.nix {};
   setupEnv = callPackage ./setup-env.nix {};
 
