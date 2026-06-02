@@ -40,7 +40,7 @@ let
     script=$(pwd)/script
 
     mkdir $target_dir
-    cp ${kernel}/{kernel.elf.txt,kernel.sigs} target
+    cp ${kernel}/{kernel.elf.*,kernel.sigs} target
 
     substitute ${scriptIn} $script \
       --subst-var-by path $target_dir/kernel \
