@@ -1,5 +1,5 @@
 { stdenvNoCC
-, python3
+, python312
 , scopeConfig
 }:
 
@@ -11,7 +11,7 @@ stdenvNoCC.mkDerivation {
   phases = [ "unpackPhase" "patchPhase" "installPhase" ];
 
   nativeBuildInputs = [
-    python3
+    python312
   ];
 
   postPatch = ''
