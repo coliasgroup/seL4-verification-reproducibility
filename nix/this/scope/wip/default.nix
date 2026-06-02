@@ -83,9 +83,9 @@ in rec {
   )));
 
   stackBoundsScopes = lib.flip lib.filter decompScopes (scope:
-    # TODO graph-refine can't figure out mutual recursion for clang or gcc 15+ -O2 codegen
+    # TODO graph-refine can't figure out mutual recursion for clang or gcc 15+ codegen
     scope.scopeConfig.arch == "ARM" && (
-      scope.scopeConfig.targetCCIsGCC && (lib.versionOlder scope.scopeConfig.targetCC.version "15" || scope.scopeConfig.optLevel == "-O1")
+      scope.scopeConfig.targetCCIsGCC && lib.versionOlder scope.scopeConfig.targetCC.version "15"
     )
   );
 
