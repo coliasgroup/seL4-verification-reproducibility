@@ -168,7 +168,7 @@ rec {
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
     "gcc13" "gcc14" "gcc15" "gcc16"
-    "clang_12" "clang"
+    "clang_18" "clang"
   ]);
 
   targetPkgsAccessByL4vArch = {
