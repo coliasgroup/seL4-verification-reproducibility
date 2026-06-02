@@ -105,6 +105,13 @@ in rec {
     scopes.ARM.o1.graphRefine.all
   ]));
 
+  # nix-build -A scopes.ARM.o2.withCC.gcc14.wip.a
+  a = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+        "decodeARMMMUInvocation"
+    ];
+  };
+
   # nix-build -A scopes.ARM.withCC.gcc13.o1.wip.ex
   ex = with graphRefine; graphRefineWith {
     args = excludeArgs ++ defaultArgs ++ [
