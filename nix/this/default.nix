@@ -61,7 +61,7 @@ rec {
     , bvName ? "${l4vName}${optLevel}" # TODO add compiler+version, and use in drv names
     , longBVName ? "${bvName}-${targetCCKind}-${targetCC.version}"
 
-    , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
+    , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
     , extraKernelCFlags ? lib.concatLists [
         (lib.optionals
