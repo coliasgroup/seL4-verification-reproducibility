@@ -77,7 +77,6 @@ rec {
         (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "13" && optLevel == "-O2")
           [
-            # Inlined clz64 causes HOL4 to take a very long time on this function. Currently marked NO_INLINE.
             # "decodeARMMMUInvocation"
             "decodeUntypedInvocation"
             "create_frames_of_region"
