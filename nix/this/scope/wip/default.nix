@@ -36,7 +36,7 @@
 }:
 
 let
-  inherit (this) scopes;
+  inherit (this) scopes bvDefaultScope;
 
   tmpSourceDir = ../../../../tmp/src;
 
@@ -106,6 +106,8 @@ in rec {
     preSearch
     bvDefaultScope.graphRefine.all
   ]));
+
+  default = bvDefaultScope.wip;
 
   # nix-build -A scopes.ARM.o2.withCC.gcc14.wip.a
   a = with graphRefine; graphRefineWith {
