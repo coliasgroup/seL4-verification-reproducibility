@@ -1,6 +1,7 @@
 { lib
 , callPackage, newScope
-, pkgs, pkgsCross
+, pkgs
+, oldPkgs
 , writeText
 , linkFarm
 }:
@@ -27,10 +28,12 @@ rec {
     , optLevel ? null
 
     , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
+    , targetPkgsBase ? if targetCCWrapperAttr == "gcc6" then oldPkgs else pkgs
+    , targetPkgs ? targetPkgsAccessByL4vArch."${arch}" targetPkgsBase
     , targetCCWrapper ?
         if lib.hasPrefix "clang" targetCCWrapperAttr
         then pkgs."${targetCCWrapperAttr}"
-        else targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
+        else (targetPkgsAccessByL4vArch."${arch}" targetPkgsBase).buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
     , targetCCIsGCC ? targetCCWrapper.isGNU
     , targetCCIsClang ? targetCCWrapper.isClang
@@ -88,10 +91,10 @@ rec {
       ]
     }:
     {
-      targetPkgs = targetPkgsByL4vArch."${arch}";
       inherit
         arch mcs features plat
         optLevel
+        targetPkgs
         targetCC targetCCKind targetCCIsGCC targetCCIsClang targetBintools targetPrefix
         seL4Source
         l4vSource
@@ -168,25 +171,20 @@ rec {
     inherit (optLevels) o1 o2;
   };
 
-  targetCCWrapperAttrForConfig = { arch, bvSupport }: "gcc13";
+  targetCCWrapperAttrForConfig = { arch, bvSupport }: if bvSupport then "gcc6" else "gcc13";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
     "gcc13" "gcc14" "gcc15" "gcc16"
     "clang_12" "clang"
   ]);
 
-  targetPkgsByL4vArch = {
-    "ARM" = armv7Pkgs;
-    "ARM_HYP" = armv7Pkgs;
-    "AARCH64" = aarch64Pkgs;
-    "RISCV64" = riscv64Pkgs;
-    "X64" = x64Pkgs;
+  targetPkgsAccessByL4vArch = {
+    "ARM" = x: x.pkgsCross.arm-embedded;
+    "ARM_HYP" = x: x.pkgsCross.arm-embedded;
+    "AARCH64" = x: x.pkgsCross.aarch64-embedded;
+    "RISCV64" = x: x.pkgsCross.riscv64-embedded;
+    "X64" = x: x;
   };
-
-  armv7Pkgs = pkgsCross.arm-embedded;
-  aarch64Pkgs = pkgsCross.aarch64-embedded;
-  riscv64Pkgs = pkgsCross.riscv64-embedded;
-  x64Pkgs = pkgs;
 
   nameModification = tag: lib.optionalString (tag != "") "_${tag}";
 
