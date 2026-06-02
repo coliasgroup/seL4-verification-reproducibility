@@ -58,20 +58,18 @@ let
 in rec {
 
   theseScopes = [
-    scopes.ARM.o1
-    scopes.ARM.o2
+    scopes.ARM.withCC.gcc6.o1
+    scopes.ARM.withCC.gcc6.
     scopes.ARM.withCC.gcc13.o1
     scopes.ARM.withCC.gcc13.o2
-    scopes.ARM.withCC.gcc14.o1 # bad jump tables
-    scopes.ARM.withCC.gcc14.o2 # bad jump tables
+    scopes.ARM.withCC.gcc14.o1
+    scopes.ARM.withCC.gcc14.o2
     scopes.ARM.withCC.clang.o1
     scopes.ARM.withCC.clang.o2
-    scopes.RISCV64.o1
-    scopes.RISCV64.o2 # without chooseThread
     scopes.RISCV64.withCC.gcc13.o1
-    scopes.RISCV64.withCC.gcc13.o2 # without chooseThread
+    scopes.RISCV64.withCC.gcc13.o2
     scopes.RISCV64.withCC.gcc14.o1
-    scopes.RISCV64.withCC.gcc14.o2 # without chooseThread and create_untypeds_for_region
+    scopes.RISCV64.withCC.gcc14.o2
     scopes.RISCV64.withCC.clang.o1
     scopes.RISCV64.withCC.clang.o2
   ];

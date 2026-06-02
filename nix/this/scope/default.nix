@@ -19,7 +19,7 @@ with self; {
 
   ### sources ###
 
-  inherit (scopeConfig) hol4Source decompilerSource graphRefineSource binaryVerificationSource;
+  inherit (scopeConfig) hol4Source graphRefineSource binaryVerificationSource;
 
   patchedSeL4Source = callPackage ./patched-sel4-source {};
   patchedL4vSource = callPackage ./patched-l4v-source {};
