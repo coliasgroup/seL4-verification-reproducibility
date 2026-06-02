@@ -84,12 +84,10 @@ in rec {
 
   stackBoundsScopes = lib.flip lib.filter decompScopes (
     # TODO graph-refine can't figure out mutual recursion for clang or gcc 15+ codegen
-    scope.scopeConfig.arch == "ARM" && scope.scopeConfig.targetCCIsGCC && lib.versionOlder targetCC.version "15"
+    scope.scopeConfig.arch == "ARM" && (
+      scope.scopeConfig.targetCCIsGCC && (lib.versionOlder targetCC.version "15" || scope.scopeConfig.optLevel == "-O1")
+    )
   );
-
-  save = writeText "x" (toString (lib.flip lib.concatMap stackBoundsScopes (scope:
-    [ scope.graphRefine.justSave ]
-  )));
 
   coverage = writeText "x" (toString (lib.flip lib.concatMap stackBoundsScopes (scope:
     [ scope.graphRefine.coverage ]
@@ -97,7 +95,6 @@ in rec {
 
   preSearch = writeText "x" (toString (lib.flatten [
     decomp
-    save
     coverage
   ]));
 
