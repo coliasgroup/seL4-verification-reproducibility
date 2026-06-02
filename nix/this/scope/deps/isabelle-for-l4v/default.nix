@@ -59,11 +59,7 @@ lib.extendDerivation true {
   inherit unpackedUpstreamSrc;
   inherit preparedSeL4Src;
   inherit diff;
-} (isabelle.overrideAttrs (attrs: {
-  patches = (attrs.patches or []) ++ [
-    ./permissions.patch
-  ];
-} // lib.optionalAttrs useSeL4IsabelleSource {
+} (isabelle.overrideAttrs (attrs: lib.optionalAttrs useSeL4IsabelleSource {
   name = "${attrs.pname}-${attrs.version}-for-seL4";
   src = preparedSeL4Src;
   sourceRoot = null;
