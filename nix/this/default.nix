@@ -173,7 +173,7 @@ rec {
   defaultCCWrapperAttr = "gcc13";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc6" "gcc13" "gcc14" "gcc15" "gcc16"
+    "gcc6" "gcc13" "gcc14" "gcc15"
     "clang_18" "clang"
   ]);
 

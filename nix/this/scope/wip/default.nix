@@ -66,8 +66,6 @@ in rec {
     scopes.ARM.withCC.gcc14.o2
     scopes.ARM.withCC.gcc15.o1
     scopes.ARM.withCC.gcc15.o2
-    scopes.ARM.withCC.gcc16.o1
-    scopes.ARM.withCC.gcc16.o2
     scopes.ARM.withCC.clang.o1
     scopes.ARM.withCC.clang.o2
     scopes.RISCV64.withCC.gcc13.o1
@@ -76,8 +74,6 @@ in rec {
     scopes.RISCV64.withCC.gcc14.o2
     scopes.RISCV64.withCC.gcc15.o1
     scopes.RISCV64.withCC.gcc15.o2
-    scopes.RISCV64.withCC.gcc16.o1
-    scopes.RISCV64.withCC.gcc16.o2
     scopes.RISCV64.withCC.clang.o1
     scopes.RISCV64.withCC.clang.o2
   ];
