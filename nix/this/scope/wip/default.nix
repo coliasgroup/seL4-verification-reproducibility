@@ -100,7 +100,7 @@ in rec {
 
   keep = writeText "x" (toString (lib.flatten [
     preSearch
-    scopes.ARM.o1.graphRefine.all
+    scopes.ARM.o1.withCC.gcc6.graphRefine.all
   ]));
 
   # nix-build -A scopes.ARM.o2.withCC.gcc14.wip.a
