@@ -141,6 +141,11 @@ with self; {
       args = saveArgs;
     };
 
+    stackBounds = with graphRefine; graphRefineWith {
+      name = "stack-bounds";
+      args = excludeArgs;
+    };
+
     coverage = graphRefineWith {
       name = "coverage";
       args = excludeArgs ++ saveArgs ++ coverageArgs;

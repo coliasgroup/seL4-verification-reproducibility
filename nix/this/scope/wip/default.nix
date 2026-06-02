@@ -57,6 +57,8 @@ let
 
 in rec {
 
+  default = bvDefaultScope.wip;
+
   decompScopes = [
     scopes.ARM.withCC.gcc6.o1
     scopes.ARM.withCC.gcc6.o2
@@ -103,122 +105,7 @@ in rec {
     bvDefaultScope.graphRefine.all
   ]));
 
-  default = bvDefaultScope.wip;
-
-  # nix-build -A scopes.ARM.o2.withCC.gcc14.wip.a
-  a = with graphRefine; graphRefineWith {
-    args = excludeArgs ++ defaultArgs ++ [
-        "decodeARMMMUInvocation"
-    ];
-  };
-
-  # nix-build -A scopes.ARM.withCC.gcc13.o1.wip.ex
-  ex = with graphRefine; graphRefineWith {
-    args = excludeArgs ++ defaultArgs ++ [
-        "doNormalTransfer" # sat
-        "decodeARMMMUInvocation" # except
-        "reserve_region" # sat
-        "handleFaultReply" # nosplit
-    ];
-    source = tmpSource.graph-refine;
-    # solverList = debugSolverList;
-    # keepBigLogs = true;
-    # stackBounds = "${stackBounds}/StackBounds.txt";
-  };
-
-  stackBounds = with graphRefine; graphRefineWith {
-    name = "stackBounds";
-    args = excludeArgs;
-  };
-
-  rmUnreachable =
-    let
-      f = scope: scope.withRevs {
-        seL4 = "2bb4da53d4a9e42d1ffc8b6fb5dd43d669375b2e";
-        l4v = "da9ac959588d5a2bd0a3827d669a4c9dad3c9fff";
-      };
-    in
-      (f this.scopes.ARM).cProofs;
-
-  x64InitializeVars =
-    let
-      f = scope: scope.withRevs {
-        seL4 = "4086a2b93186ba14fa7fe05216dd351687915dbe";
-        l4v = "0464c75de3f5bb8b9c6c7ed4c167bf30e6330d5a";
-      };
-    in
-      (f this.scopes.X64).cProofs;
-
-  irqInvalidScopes =
-    lib.flip lib.mapAttrs this.scopes (lib.const (scope: scope.withRevs {
-      seL4 = "aa337966acce97651ad58609dcb63a3d719dc873";
-      l4v = "da9ac959588d5a2bd0a3827d669a4c9dad3c9fff";
-    }));
-
-  irqInvalid = writeText "x" (toString (lib.flatten [
-    irqInvalidScopes.ARM.cProofs
-    irqInvalidScopes.ARM_HYP.cProofs
-    irqInvalidScopes.AARCH64.cProofs
-    irqInvalidScopes.ARM.o1.wip.getActiveIRQ
-    irqInvalidScopes.ARM.o2.wip.getActiveIRQ
-  ]));
-
-  tip = writeText "x" (toString (lib.flatten [
-    scopes.ARM.withChannel.tip.upstream.cProofs
-    scopes.ARM_HYP.withChannel.tip.upstream.cProofs
-    scopes.AARCH64.withChannel.tip.upstream.cProofs
-    scopes.RISCV64.withChannel.tip.upstream.cProofs
-    scopes.RISCV64_MCS.withChannel.tip.upstream.cProofs
-    scopes.X64.withChannel.tip.upstream.cProofs
-  ]));
-
-  release = writeText "x" (toString (lib.flatten [
-    scopes.ARM.withChannel.release.upstream.cProofs
-    scopes.ARM_HYP.withChannel.release.upstream.cProofs
-    scopes.AARCH64.withChannel.release.upstream.cProofs
-    scopes.RISCV64.withChannel.release.upstream.cProofs
-    scopes.X64.withChannel.release.upstream.cProofs
-  ]));
-
-  # cached = writeText "cached" (toString (lib.flatten [
-  #   scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
-  #   scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
-  #   scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
-  #   o1.big
-  #   o1.small
-  #   o1.focused
-  #   o1.example
-  #   o2.big
-  #   o2.small
-  #   o2.focused
-  #   o2.example
-  #   scopes.ARM.o1.withChannel.release.downstream.l4vAll
-  #   scopes.RISCV64.o1.withChannel.release.upstream.graphRefine.all.targetDir
-  #   # scopes.RISCV64.o2.withChannel.release.upstream.decompilation # hangs? (8+ hours)
-  #   scopes.RISCV64.o2.withChannel.release.upstream.forceSimplExport
-  #   scopes.AARCH64.o1.withChannel.release.upstream.decompilation
-  #   # scopes.AARCH64.o1.withChannel.release.upstream.forceSimplExport # unsupported
-  # ]));
-
-  todo = writeText "todo" (toString (lib.flatten [
-    scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
-    scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
-    # scopes.ARM.o1.withChannel.release.upstream.all
-    # this.displayStatus
-  ]));
-
-  keepHere = writeText "keep-here" (toString (lib.flatten [
-    (lib.forEach (lib.attrValues scopes) (scope':
-      let
-        scope = scope'.o1;
-      in
-        lib.optionals (scope'.scopeConfig.plat == "") [
-          (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
-            then scope.slow
-            else scope.slower)
-        ]
-    ))
-  ]));
+  # # #
 
   solvers = {
     online = {
@@ -468,6 +355,73 @@ in rec {
     keepBigLogs = true;
   };
 
+  # # # scratch # # #
+
+  # nix-build -A scopes.ARM.o2.withCC.gcc14.wip.a
+  a = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+        "decodeARMMMUInvocation"
+    ];
+  };
+
+  # nix-build -A scopes.ARM.withCC.gcc13.o1.wip.ex
+  ex = with graphRefine; graphRefineWith {
+    args = excludeArgs ++ defaultArgs ++ [
+        "doNormalTransfer" # sat
+        "decodeARMMMUInvocation" # except
+        "reserve_region" # sat
+        "handleFaultReply" # nosplit
+    ];
+    source = tmpSource.graph-refine;
+    # solverList = debugSolverList;
+    # keepBigLogs = true;
+    # stackBounds = "${stackBounds}/StackBounds.txt";
+  };
+
+  # # #
+
+  # TODO
+
+  # cached = writeText "cached" (toString (lib.flatten [
+  #   scopes.ARM.o1.withChannel.release.downstream.graphRefine.all
+  #   scopes.ARM.o1.withChannel.release.upstream.graphRefine.all
+  #   scopes.ARM.o2.withChannel.release.upstream.graphRefine.all
+  #   o1.big
+  #   o1.small
+  #   o1.focused
+  #   o1.example
+  #   o2.big
+  #   o2.small
+  #   o2.focused
+  #   o2.example
+  #   scopes.ARM.o1.withChannel.release.downstream.l4vAll
+  #   scopes.RISCV64.o1.withChannel.release.upstream.graphRefine.all.targetDir
+  #   # scopes.RISCV64.o2.withChannel.release.upstream.decompilation # hangs? (8+ hours)
+  #   scopes.RISCV64.o2.withChannel.release.upstream.forceSimplExport
+  #   scopes.AARCH64.o1.withChannel.release.upstream.decompilation
+  #   # scopes.AARCH64.o1.withChannel.release.upstream.forceSimplExport # unsupported
+  # ]));
+
+  todo = writeText "todo" (toString (lib.flatten [
+    scopes.ARM.o1.withChannel.release.upstream.wip.keepHere
+    scopes.ARM.o1.withChannel.tip.upstream.wip.keepHere
+    # scopes.ARM.o1.withChannel.release.upstream.all
+    # this.displayStatus
+  ]));
+
+  keepHere = writeText "keep-here" (toString (lib.flatten [
+    (lib.forEach (lib.attrValues scopes) (scope':
+      let
+        scope = scope'.o1;
+      in
+        lib.optionals (scope'.scopeConfig.plat == "") [
+          (if scope.scopeConfig.mcs || lib.elem scope.scopeConfig.arch [ "AARCH64" "X64" ]
+            then scope.slow
+            else scope.slower)
+        ]
+    ))
+  ]));
+
   # # #
 
   debugSolverList =
@@ -543,6 +497,60 @@ in rec {
       }
     '';
   };
+
+  # # #
+
+
+  rmUnreachable =
+    let
+      f = scope: scope.withRevs {
+        seL4 = "2bb4da53d4a9e42d1ffc8b6fb5dd43d669375b2e";
+        l4v = "da9ac959588d5a2bd0a3827d669a4c9dad3c9fff";
+      };
+    in
+      (f this.scopes.ARM).cProofs;
+
+  x64InitializeVars =
+    let
+      f = scope: scope.withRevs {
+        seL4 = "4086a2b93186ba14fa7fe05216dd351687915dbe";
+        l4v = "0464c75de3f5bb8b9c6c7ed4c167bf30e6330d5a";
+      };
+    in
+      (f this.scopes.X64).cProofs;
+
+  irqInvalidScopes =
+    lib.flip lib.mapAttrs this.scopes (lib.const (scope: scope.withRevs {
+      seL4 = "aa337966acce97651ad58609dcb63a3d719dc873";
+      l4v = "da9ac959588d5a2bd0a3827d669a4c9dad3c9fff";
+    }));
+
+  irqInvalid = writeText "x" (toString (lib.flatten [
+    irqInvalidScopes.ARM.cProofs
+    irqInvalidScopes.ARM_HYP.cProofs
+    irqInvalidScopes.AARCH64.cProofs
+    irqInvalidScopes.ARM.o1.wip.getActiveIRQ
+    irqInvalidScopes.ARM.o2.wip.getActiveIRQ
+  ]));
+
+  tip = writeText "x" (toString (lib.flatten [
+    scopes.ARM.withChannel.tip.upstream.cProofs
+    scopes.ARM_HYP.withChannel.tip.upstream.cProofs
+    scopes.AARCH64.withChannel.tip.upstream.cProofs
+    scopes.RISCV64.withChannel.tip.upstream.cProofs
+    scopes.RISCV64_MCS.withChannel.tip.upstream.cProofs
+    scopes.X64.withChannel.tip.upstream.cProofs
+  ]));
+
+  release = writeText "x" (toString (lib.flatten [
+    scopes.ARM.withChannel.release.upstream.cProofs
+    scopes.ARM_HYP.withChannel.release.upstream.cProofs
+    scopes.AARCH64.withChannel.release.upstream.cProofs
+    scopes.RISCV64.withChannel.release.upstream.cProofs
+    scopes.X64.withChannel.release.upstream.cProofs
+  ]));
+
+  # # #
 
   scopeWithHol4Rev = { rev, ref ? "HEAD" }: overrideConfig {
     hol4Source = lib.cleanSource (builtins.fetchGit {
