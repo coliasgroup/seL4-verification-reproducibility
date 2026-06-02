@@ -8,10 +8,6 @@
 , hol4Source
 }:
 
-# TODO
-# Address:
-# Fontconfig error: No writable cache directories
-
 stdenv.mkDerivation {
   name = "hol4";
 
