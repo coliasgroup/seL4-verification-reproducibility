@@ -27,7 +27,7 @@ rec {
     , plat ? "" # TODO none should be null
     , optLevel ? null
 
-    , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
+    , targetCCWrapperAttr ? defaultCCWrapperAttr
     , targetPkgsBase ? if targetCCWrapperAttr == "gcc6" then oldPkgs else pkgs
     , targetPkgs ? targetPkgsAccessByL4vArch."${arch}" targetPkgsBase
     , targetCCWrapper ?
@@ -170,10 +170,10 @@ rec {
     inherit (optLevels) o1 o2;
   };
 
-  targetCCWrapperAttrForConfig = { arch, bvSupport }: if bvSupport then "gcc6" else "gcc13";
+  defaultCCWrapperAttr = "gcc13";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc13" "gcc14" "gcc15" "gcc16"
+    "gcc6" "gcc13" "gcc14" "gcc15" "gcc16"
     "clang_18" "clang"
   ]);
 
