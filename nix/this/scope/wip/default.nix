@@ -59,7 +59,7 @@ in rec {
 
   theseScopes = [
     scopes.ARM.withCC.gcc6.o1
-    scopes.ARM.withCC.gcc6.
+    scopes.ARM.withCC.gcc6.o2
     scopes.ARM.withCC.gcc13.o1
     scopes.ARM.withCC.gcc13.o2
     scopes.ARM.withCC.gcc14.o1
