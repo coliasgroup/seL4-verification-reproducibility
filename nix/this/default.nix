@@ -170,10 +170,10 @@ rec {
     inherit (optLevels) o1 o2;
   };
 
-  defaultCCWrapperAttr = "gcc13";
+  defaultCCWrapperAttr = "gcc";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc6" "gcc13" "gcc14" "gcc15"
+    "gcc6" "gcc13" "gcc14" "gcc15" "gcc"
     "clang_18" "clang"
   ]);
 
