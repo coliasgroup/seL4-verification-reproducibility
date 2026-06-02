@@ -35,7 +35,7 @@ let
       rev = "574d1eac1c200690e27b8eb4e24887f8df7ac27c";
       source = builtins.fetchTarball {
         url = "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz";
-        sha256 = "sha256:1in77kl5x9a0v3y0yw6fibpx1797k1d4s3nd2zfq5bwp7343ia84";
+        sha256 = "sha256:0s6h7r9jin9sd8l85hdjwl3jsvzkddn3blggy78w4f21qa3chymz";
       };
     in import source args;
 
