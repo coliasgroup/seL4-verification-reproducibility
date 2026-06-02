@@ -1,5 +1,5 @@
 { lib
-, stdenv
+, gcc14Stdenv
 , pkgsDynamic
 , writeText
 , fetchFromGitHub
@@ -45,7 +45,7 @@ let
   '';
 
 in
-stdenv.mkDerivation rec {
+gcc14Stdenv.mkDerivation rec {
   pname = "bitwuzla";
   version = "0.2.0";
 

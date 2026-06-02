@@ -3,13 +3,6 @@ let
     this = callPackage ./this {};
     pythonPackagesExtensions = super.pythonPackagesExtensions ++ [
       (callPackage ./python-packages-extension.nix {})
-      # HACK
-      (self: super: {
-        psutilForPython2 = self.psutil.overridePythonAttrs {
-          disabled = false;
-          doCheck = false;
-        };
-      })
     ];
   };
 

@@ -52,7 +52,6 @@ runCommand "graph-refine${lib.optionalString (name != null) "-${name}"}-${scopeC
     python2Packages.python
     python2Packages.typing
     python2Packages.enum
-    python2Packages.psutilForPython2
     git
   ] ++ lib.optionals keepBigLogs [
     smtfmt-in-place
