@@ -397,7 +397,9 @@ rec {
       )
     );
 
-  defaultScope = scopes.ARM.o1;
+  defaultScope = bvDefaultScope;
+
+  bvDefaultScope = scopes.ARM.o1.withCC.gcc6;
 
   tests = writeText "aggregate-tests" (toString (lib.flatten [
     (lib.forEach (lib.attrValues scopesWithOptLevels) (scope: lib.optionals (scope.scopeConfig.plat == "") [
