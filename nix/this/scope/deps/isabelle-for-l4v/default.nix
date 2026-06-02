@@ -72,7 +72,7 @@ lib.extendDerivation true {
     sourceRoot=${attrs.dirname}
     mv $oldSourceRoot $sourceRoot
   '';
-  prePatch = (attrs.postPath or "") + ''
+  prePatch = (attrs.prePatch or "") + ''
     touch heaps
   '';
 }))
