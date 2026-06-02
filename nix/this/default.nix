@@ -64,12 +64,6 @@ rec {
     , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
     , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
     , extraKernelCFlags ? lib.concatLists [
-        # GCC 14+ use codgen for jump tables that the decompiler can't yet handle.
-        # Note that jump tables in some decode* functions slow graph-refine way down, but only on
-        # GCC <= 13 because jump tables are disabled otherwise.
-        (lib.optionals
-          (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "14")
-          [ "-fno-jump-tables" ])
         (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versionAtLeast targetCC.version "13" && optLevel == "-O2")
           [ "-fno-tree-fre" "-fno-gcse" "-fno-tree-pre" ])
