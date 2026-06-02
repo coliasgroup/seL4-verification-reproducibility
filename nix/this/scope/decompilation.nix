@@ -59,6 +59,8 @@ runCommand "decompilation-checked-${scopeConfig.longBVName}" {
     inherit unchecked;
   };
 } ''
+  echo "checking ${unchecked}"
+
   if grep 'Export FAILED' ${unchecked}/log.txt ${lib.optionalString (scopeConfig.arch == "RISCV64") ''
     | grep -v -F ' __global_pointer$.' \
   ''}; then
