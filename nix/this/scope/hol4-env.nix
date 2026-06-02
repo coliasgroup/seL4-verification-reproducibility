@@ -9,12 +9,12 @@
 , mltonForHol4
 , hol4Source
 
-, emacsWithPackages
+, emacsPackages
 }:
 
 let
 
-  emacsForShell = emacsWithPackages (epkgs: [
+  emacsForShell = emacsPackages.emacsWithPackages (epkgs: [
   ]);
 
   localSrc = toString ../../../tmp/src/HOL;
