@@ -4,7 +4,6 @@
 , runCommand
 , writeText
 , linkFarm
-, gcc9Stdenv
 , texlive
 , python3Packages
 , python2
@@ -20,7 +19,7 @@ with self; {
 
   ### sources ###
 
-  inherit (scopeConfig) hol4Source decompilerSource graphRefineSource binaryVerificationSource;
+  inherit (scopeConfig) hol4Source graphRefineSource binaryVerificationSource;
 
   patchedSeL4Source = callPackage ./patched-sel4-source {};
   patchedL4vSource = callPackage ./patched-l4v-source {};
@@ -28,7 +27,7 @@ with self; {
   toolchainAttrs =
     let
       inherit (scopeConfig) targetPrefix;
-      triple = scopeConfig.targetPkgs.hostPlatform.config;
+      triple = scopeConfig.targetPkgs.stdenv.hostPlatform.config;
     in
       assert targetPrefix == "" || targetPrefix == "${triple}-";
       if scopeConfig.targetCCIsClang then {
@@ -55,17 +54,17 @@ with self; {
   l4vAll = l4vWith {
     name = "all";
     tests = [];
-    buildStandaloneCParser = scopeConfig.bvSetupSupport;
+    buildStandaloneCParser = scopeConfig.bvLiftSupport;
   };
 
   cProofs = l4vWith {
     name = "c-proofs";
     tests = [
       "CRefine"
-    ] ++ lib.optionals scopeConfig.bvSetupSupport [
+    ] ++ lib.optionals scopeConfig.bvLowerSupport [
       "SimplExportAndRefine"
     ];
-    buildStandaloneCParser = scopeConfig.bvSetupSupport;
+    buildStandaloneCParser = scopeConfig.bvLiftSupport;
   };
 
   justStandaloneCParser = l4vWith {
@@ -82,7 +81,7 @@ with self; {
   minimalBinaryVerificationInputs = l4vWith {
     name = "minimal-bv-input";
     buildStandaloneCParser = true;
-    simplExport = scopeConfig.bvSetupSupport;
+    simplExport = scopeConfig.bvLowerSupport;
   };
 
   # binaryVerificationInputs = cProofs;
@@ -142,6 +141,11 @@ with self; {
       args = saveArgs;
     };
 
+    stackBounds = with graphRefine; graphRefineWith {
+      name = "stack-bounds";
+      args = excludeArgs;
+    };
+
     coverage = graphRefineWith {
       name = "coverage";
       args = excludeArgs ++ saveArgs ++ coverageArgs;
@@ -193,8 +197,6 @@ with self; {
 
   isabelleForL4v = if scopeConfig.useSeL4Isabelle then seL4IsabelleForL4v else upstreamIsabelleForL4v;
 
-  stdenvForHol4 = gcc9Stdenv;
-
   polymlForHol4 = lib.overrideDerivation polyml (attrs: {
     configureFlags = [ "--enable-shared" ];
   });
@@ -218,20 +220,19 @@ with self; {
     simplExport
     l4vSpec
     hol4
-  ] ++ lib.optionals scopeConfig.bvSetupSupport [
+  ] ++ lib.optionals scopeConfig.bvLiftSupport [
     decompilation
     preprocessedKernelsAreEquivalent
   ] ++ lib.optionals scopeConfig.bvSupport [
     graphRefine.justSave
     graphRefine.coverage
     graphRefine.demo
-    sonolarModelBug.evidence
   ]));
 
   slower = writeText "slower" (toString ([
     slow
-    cProofs
-    # l4vAll
+    # cProofs
+    l4vAll
   ] ++ lib.optionals scopeConfig.bvSupport [
   ]));
 
@@ -244,9 +245,8 @@ with self; {
   excess = writeText "excess" (toString ([
     justStandaloneCParser
     justSimplExport
-    minimalBinaryVerificationInputs
+    # minimalBinaryVerificationInputs
     cProofs
-    sonolarDependence.evidence
   ]));
 
   all = writeText "all" (toString [

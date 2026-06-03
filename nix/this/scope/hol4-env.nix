@@ -1,6 +1,5 @@
 { lib
 , mkShell
-, stdenvForHol4
 , writeText
 , makeFontsConf
 , python3, perl
@@ -10,12 +9,12 @@
 , mltonForHol4
 , hol4Source
 
-, emacsWithPackages
+, emacsPackages
 }:
 
 let
 
-  emacsForShell = emacsWithPackages (epkgs: [
+  emacsForShell = emacsPackages.emacsWithPackages (epkgs: [
   ]);
 
   localSrc = toString ../../../tmp/src/HOL;
@@ -29,7 +28,7 @@ let
     # (load (concat (getenv "HOLDIR") "/tools/hol-unicode"))
 in
 
-(mkShell.override { stdenv = stdenvForHol4; }) {
+mkShell {
   name = "hol4-env";
 
   nativeBuildInputs = [

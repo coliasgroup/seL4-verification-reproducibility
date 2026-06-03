@@ -1,6 +1,7 @@
 { lib
 , callPackage, newScope
-, pkgs, pkgsCross
+, pkgs
+, oldPkgs
 , writeText
 , linkFarm
 }:
@@ -26,11 +27,13 @@ rec {
     , plat ? "" # TODO none should be null
     , optLevel ? null
 
-    , targetCCWrapperAttr ? targetCCWrapperAttrForConfig { inherit arch bvSupport; }
+    , targetCCWrapperAttr ? defaultCCWrapperAttr
+    , targetPkgsBase ? if targetCCWrapperAttr == "gcc6" then oldPkgs else pkgs
+    , targetPkgs ? targetPkgsAccessByL4vArch."${arch}" targetPkgsBase
     , targetCCWrapper ?
         if lib.hasPrefix "clang" targetCCWrapperAttr
         then pkgs."${targetCCWrapperAttr}"
-        else targetPkgsByL4vArch."${arch}".buildPackages."${targetCCWrapperAttr}"
+        else (targetPkgsAccessByL4vArch."${arch}" targetPkgsBase).buildPackages."${targetCCWrapperAttr}"
     , targetCC ? targetCCWrapper.cc
     , targetCCIsGCC ? targetCCWrapper.isGNU
     , targetCCIsClang ? targetCCWrapper.isClang
@@ -58,8 +61,9 @@ rec {
     , bvName ? "${l4vName}${optLevel}" # TODO add compiler+version, and use in drv names
     , longBVName ? "${bvName}-${targetCCKind}-${targetCC.version}"
 
-    , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs && /* TODO */ !(arch == "RISCV64" && optLevel == "-O2")
-    , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
+    , bvLiftSupport ? lib.elem arch [ "ARM" "RISCV64" ]
+    , bvLowerSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs
+    , bvSupport ? bvLiftSupport && bvLowerSupport && lib.elem arch [ "ARM" ]
     , extraKernelCFlags ? lib.concatLists [
         # GCC 14+ use codgen for jump tables that the decompiler can't yet handle.
         # Note that jump tables in some decode* functions slow graph-refine way down, but only on
@@ -80,7 +84,6 @@ rec {
         (lib.optionals
           (arch == "ARM" && targetCCIsGCC && lib.versions.major targetCC.version == "13" && optLevel == "-O2")
           [
-            # Inlined clz64 causes HOL4 to take a very long time on this function. Currently marked NO_INLINE.
             # "decodeARMMMUInvocation"
             "decodeUntypedInvocation"
             "create_frames_of_region"
@@ -88,10 +91,10 @@ rec {
       ]
     }:
     {
-      targetPkgs = targetPkgsByL4vArch."${arch}";
       inherit
         arch mcs features plat
         optLevel
+        targetPkgs
         targetCC targetCCKind targetCCIsGCC targetCCIsClang targetBintools targetPrefix
         seL4Source
         l4vSource
@@ -102,7 +105,8 @@ rec {
         useSeL4Isabelle
         extraKernelCFlags
         extraDecompileExclude
-        bvSetupSupport
+        bvLiftSupport
+        bvLowerSupport
         bvSupport
         bvExclude
         l4vName
@@ -168,25 +172,20 @@ rec {
     inherit (optLevels) o1 o2;
   };
 
-  targetCCWrapperAttrForConfig = { arch, bvSupport }: if bvSupport then "gcc6" else "gcc12";
+  defaultCCWrapperAttr = "gcc";
 
   targetCCWrapperAttrs = lib.listToAttrs (map (v: lib.nameValuePair v v) [
-    "gcc49" "gcc6" "gcc7" "gcc8" "gcc9" "gcc10" "gcc11" "gcc12" "gcc13" "gcc14"
-    "clang_11" "clang_12" "clang"
+    "gcc6" "gcc13" "gcc14" "gcc15" "gcc"
+    "clang_18" "clang"
   ]);
 
-  targetPkgsByL4vArch = {
-    "ARM" = armv7Pkgs;
-    "ARM_HYP" = armv7Pkgs;
-    "AARCH64" = aarch64Pkgs;
-    "RISCV64" = riscv64Pkgs;
-    "X64" = x64Pkgs;
+  targetPkgsAccessByL4vArch = {
+    "ARM" = x: x.pkgsCross.arm-embedded;
+    "ARM_HYP" = x: x.pkgsCross.arm-embedded;
+    "AARCH64" = x: x.pkgsCross.aarch64-embedded;
+    "RISCV64" = x: x.pkgsCross.riscv64-embedded;
+    "X64" = x: x;
   };
-
-  armv7Pkgs = pkgsCross.arm-embedded;
-  aarch64Pkgs = pkgsCross.aarch64-embedded;
-  riscv64Pkgs = pkgsCross.riscv64-embedded;
-  x64Pkgs = pkgs;
 
   nameModification = tag: lib.optionalString (tag != "") "_${tag}";
 
@@ -229,14 +228,14 @@ rec {
 
   downstreamGitIsabelleSource = builtins.fetchGit {
     url = "https://github.com/seL4/isabelle.git";
-    ref = "ts-2024";
-    rev = "e0dd5a6d89d2c0b37e7f1ffe0105050189136b75";
+    ref = "ts-2025";
+    rev = "836be93892924dfa8eaa1f262ce9d03fc0eef71e";
   };
 
   upstreamGitIsabelleSource = builtins.fetchGit {
     url = "https://github.com/seL4/isabelle.git";
-    ref = "Isabelle2024";
-    rev = "74b2d1278b57797572abe5842e318d17ed131c55";
+    ref = "Isabelle2025";
+    rev = "5cdba83cd9c7ee47081acb2df0e4a7b7a755cdce";
   };
 
   mkKeepRef = rev: "refs/tags/keep/${builtins.substring 0 32 rev}";
@@ -400,7 +399,9 @@ rec {
       )
     );
 
-  defaultScope = scopes.ARM.o1;
+  defaultScope = bvDefaultScope;
+
+  bvDefaultScope = scopes.ARM.o1.withCC.gcc6;
 
   tests = writeText "aggregate-tests" (toString (lib.flatten [
     (lib.forEach (lib.attrValues scopesWithOptLevels) (scope: lib.optionals (scope.scopeConfig.plat == "") [

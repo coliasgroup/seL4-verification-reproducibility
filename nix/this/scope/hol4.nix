@@ -1,4 +1,4 @@
-{ stdenvForHol4
+{ stdenv
 , makeFontsConf
 , python3, perl
 , graphviz
@@ -8,11 +8,7 @@
 , hol4Source
 }:
 
-# TODO
-# Address:
-# Fontconfig error: No writable cache directories
-
-stdenvForHol4.mkDerivation {
+stdenv.mkDerivation {
   name = "hol4";
 
   src = hol4Source;

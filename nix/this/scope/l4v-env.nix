@@ -1,7 +1,7 @@
 { lib
 , mkShell
 , makeFontsConf
-, python3Packages
+, python312Packages
 , cmake, ninja, dtc, libxml2
 , perl
 , which
@@ -38,7 +38,7 @@ mkShell {
     gmp
     zlib
 
-    python3Packages.sel4-deps
+    python312Packages.sel4-deps
 
     scopeConfig.targetCC
     scopeConfig.targetBintools

@@ -3,7 +3,7 @@
 , haskell
 }:
 
-(haskell.packages.ghc928.override {
+(haskell.packages.ghc94.override {
   overrides = self: super: {
     mtl = self.callPackage ./mtl_2_2_2.nix {};
   };
