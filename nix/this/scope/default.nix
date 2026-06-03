@@ -51,6 +51,13 @@ with self; {
     ];
   };
 
+  h = l4vWith {
+    name = "h";
+    tests = [
+      "HaskellKernel"
+    ];
+  };
+
   l4vAll = l4vWith {
     name = "all";
     tests = [];
