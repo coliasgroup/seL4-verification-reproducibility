@@ -227,13 +227,12 @@ with self; {
     graphRefine.justSave
     graphRefine.coverage
     graphRefine.demo
-    sonolarModelBug.evidence
   ]));
 
   slower = writeText "slower" (toString ([
     slow
-    cProofs
-    # l4vAll
+    # cProofs
+    l4vAll
   ] ++ lib.optionals scopeConfig.bvSupport [
   ]));
 
@@ -246,9 +245,8 @@ with self; {
   excess = writeText "excess" (toString ([
     justStandaloneCParser
     justSimplExport
-    minimalBinaryVerificationInputs
+    # minimalBinaryVerificationInputs
     cProofs
-    sonolarDependence.evidence
   ]));
 
   all = writeText "all" (toString [
