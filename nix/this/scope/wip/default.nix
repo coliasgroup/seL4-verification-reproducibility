@@ -103,6 +103,7 @@ in rec {
   keep = writeText "x" (toString (lib.flatten [
     preSearch
     bvDefaultScope.graphRefine.all
+    bvDefaultScope.l4vAll
   ]));
 
   # # #
