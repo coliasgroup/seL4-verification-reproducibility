@@ -54,17 +54,17 @@ with self; {
   l4vAll = l4vWith {
     name = "all";
     tests = [];
-    buildStandaloneCParser = scopeConfig.bvSetupSupport;
+    buildStandaloneCParser = scopeConfig.bvLiftSupport;
   };
 
   cProofs = l4vWith {
     name = "c-proofs";
     tests = [
       "CRefine"
-    ] ++ lib.optionals scopeConfig.bvSetupSupport [
+    ] ++ lib.optionals scopeConfig.bvLowerSupport [
       "SimplExportAndRefine"
     ];
-    buildStandaloneCParser = scopeConfig.bvSetupSupport;
+    buildStandaloneCParser = scopeConfig.bvLiftSupport;
   };
 
   justStandaloneCParser = l4vWith {
@@ -81,7 +81,7 @@ with self; {
   minimalBinaryVerificationInputs = l4vWith {
     name = "minimal-bv-input";
     buildStandaloneCParser = true;
-    simplExport = scopeConfig.bvSetupSupport;
+    simplExport = scopeConfig.bvLowerSupport;
   };
 
   # binaryVerificationInputs = cProofs;
@@ -220,7 +220,7 @@ with self; {
     simplExport
     l4vSpec
     hol4
-  ] ++ lib.optionals scopeConfig.bvSetupSupport [
+  ] ++ lib.optionals scopeConfig.bvLiftSupport [
     decompilation
     preprocessedKernelsAreEquivalent
   ] ++ lib.optionals scopeConfig.bvSupport [

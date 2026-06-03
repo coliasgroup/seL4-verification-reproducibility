@@ -61,8 +61,9 @@ rec {
     , bvName ? "${l4vName}${optLevel}" # TODO add compiler+version, and use in drv names
     , longBVName ? "${bvName}-${targetCCKind}-${targetCC.version}"
 
-    , bvSetupSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs
-    , bvSupport ? bvSetupSupport && lib.elem arch [ "ARM" ]
+    , bvLiftSupport ? lib.elem arch [ "ARM" "RISCV64" ]
+    , bvLowerSupport ? lib.elem arch [ "ARM" "RISCV64" ] && !mcs
+    , bvSupport ? bvLiftSupport && bvLowerSupport && lib.elem arch [ "ARM" ]
     , extraKernelCFlags ? lib.concatLists [
         # GCC 14+ use codgen for jump tables that the decompiler can't yet handle.
         # Note that jump tables in some decode* functions slow graph-refine way down, but only on
@@ -104,7 +105,8 @@ rec {
         useSeL4Isabelle
         extraKernelCFlags
         extraDecompileExclude
-        bvSetupSupport
+        bvLiftSupport
+        bvLowerSupport
         bvSupport
         bvExclude
         l4vName
