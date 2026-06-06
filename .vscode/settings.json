@@ -1,3 +1,5 @@
 {
-  "haskell.formattingProvider": "stylish-haskell",
+  // effectively disable
+  "haskell.manageHLS": "PATH",
+  "haskell.serverExecutablePath": "false",
 }
