@@ -356,6 +356,14 @@ in rec {
     keepBigLogs = true;
   };
 
+  oldHarness = with graphRefine; graphRefineWith {
+    args = defaultArgs;
+    source = tmpSource.graph-refine-local;
+    solverList = debugSolverList;
+    # uncomment this to get SMT traces, but do so sparingly because each derivation has 60M worth
+    # keepBigLogs = true;
+  };
+
   # # # scratch # # #
 
   # nix-build -A scopes.ARM.o2.withCC.gcc14.wip.a

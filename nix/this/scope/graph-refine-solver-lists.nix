@@ -88,7 +88,9 @@ lib.makeScope newScope (self: with self;
       }:
 
       writeText "solverlist" ''
-        strategy: ${lib.concatStringsSep ", " (lib.forEach strategy ({ key, scope }: "${key} ${scope}"))}
+        ${lib.optionalString (strategy != []) ''
+          strategy: ${lib.concatStringsSep ", " (lib.forEach strategy ({ key, scope }: "${key} ${scope}"))}
+        ''}
         ${lib.concatStrings (lib.flip lib.mapAttrsToList onlineSolvers (key: { config, command }: ''
           ${key}: online: ${lib.concatStringsSep " " command}
           ${lib.optionalString (config != []) ''
