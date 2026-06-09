@@ -219,6 +219,8 @@ rec {
       basePath = src;
       extraRules = ''
         !/sigobj/README
+        # HACK, TODO fix global gitignore issue
+        *.so
       '';
     };
   };
